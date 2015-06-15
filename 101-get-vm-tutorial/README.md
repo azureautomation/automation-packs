@@ -4,7 +4,7 @@ This sample shows how you can deploy a runbook, a credential the runbook relies 
 
 It contains a sample script, Deploy-ThroughARM, that you can use to get you started with the deployment.
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/) 
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F01-get-vm-tutorial%2FdeployAutomationResources.json) 
 
 ##Resources Deployed
 ###Automation Account
