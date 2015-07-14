@@ -1,0 +1,20 @@
+{
+    "accountName": {
+        "value": "MyAutomationAccount"
+    },
+    "regionId": {
+        "value": "East US 2"
+    },
+    "pricingTier":{
+	"value":"Free"
+    },
+    "certName": {
+        "value": "MyCert"
+    },
+    "base64Value": {
+	"value":"insertBase64CertificateValueHere"
+    },
+    "thumbprint": {
+        "value": "insertThumbprintHere"
+    }
+}

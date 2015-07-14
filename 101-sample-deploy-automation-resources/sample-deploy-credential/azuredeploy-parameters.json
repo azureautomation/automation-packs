@@ -1,0 +1,20 @@
+{
+    "accountName": {
+        "value": "MyAutomationAccount"
+    },
+    "regionId": {
+        "value": "East US 2"
+    },
+    "pricingTier":{
+	"value":"Free"
+    },
+    "credentialName": {
+        "value": "DefaultAzureCredential"
+    },
+    "userName": {
+        "value": "MyAzureADUser"
+    },
+    "password": { 
+	"value":  "MyAzureADPassword"
+    }
+}
