@@ -36,6 +36,18 @@
             "metadata": {
                 "description": "The name of the Azure Automation connection asset. The connection type must be deployed before you can deploy the connection.  In this case, we are using Azure since that is created for all users."
             }
+        },
+        "connectionCertificateName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the certificate used for Azure auth."
+            }
+        },
+        "connectionSubscriptionId": {
+            "type": "string",
+            "metadata": {
+                "description": "The ID of the Azure subscription you want to connect to."
+            }
         }
     },
     "variables": {
@@ -74,8 +86,8 @@
                             "name": "Azure"
                         },
                         "fieldDefinitionValues": {
-                            "AutomationCertificateName": "MyAzureCert",
-                            "SubscriptionID": "124234245325432"
+                            "AutomationCertificateName": "[parameters('connectionCertificateName')]",
+                            "SubscriptionID": "[parameters('connectionSubscriptionId')]"
                         }
                     }
 

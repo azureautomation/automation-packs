@@ -37,12 +37,6 @@
                 "description": "The name of the schedule."
             }
         },
-        "startDate": {
-            "type": "datetime",
-            "metadata": {
-                "description": "The datetime start value for the scehdule."
-            }
-        },
         "frequency": {
             "type": "string",
             "allowedValues": [
@@ -62,7 +56,7 @@
         }
     },
     "variables": {
-        "runbookPublishedName": "Write-HellowWorld",
+        "runbookPublishedName": "Write-HelloWorld",
         "runbookPublishedURI": "https://gallery.technet.microsoft.com/scriptcenter/The-Hello-World-of-Windows-81b69574/file/111354/1/Write-HelloWorld.ps1"
     },
         "resources": [
@@ -117,7 +111,7 @@
                         },
                         "properties": {
                             "description": "My schedule description",
-                            "startTime": "[parameters('startTime')]",
+                            "startTime": "12/30/2015 12:00:00",
                             "isEnabled": "true",
                             "interval": "1",
                             "frequency":  "[parameters('frequency')]"
@@ -131,7 +125,7 @@
                         "location": "[parameters('location')]",
                         "dependsOn": [
                             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
-                            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), variables('runbookName'))]",
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),  '/runbooks/', variables('runbookPublishedName'))]",
                             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/schedules/', parameters('scheduleName'))]"
                         ],
                         "tags": {
@@ -141,7 +135,7 @@
                                 "name": "[parameters('scheduleName')]"
                             },
                             "runbook": {
-                                "name": "[ variables('runbookName')]"
+                                "name": "[ variables('runbookPublishedName')]"
                             }
                         }
                     }
