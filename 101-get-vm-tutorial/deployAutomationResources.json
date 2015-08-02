@@ -21,6 +21,16 @@
                 "description": "The region to deploy the Automation account in."
             }
         },
+        "pricingTier": {
+            "type": "string",
+            "allowedValues": [
+                "Free",
+                "Basic"
+            ],
+            "metadata": {
+                "description": "The pricing tier for the account."
+            }
+        },
         "credentialName": {
             "type": "string",
             "metadata": {
@@ -34,7 +44,7 @@
             }
         },
         "password": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "The password for the Azure Automation credential."
             }
@@ -49,8 +59,7 @@
     "variables": {
         "runbookName": "Get-AzureVMTutorial",
         "scriptUri": "https://raw.githubusercontent.com/azureautomation/resources/master/automation-packs/101-get-vm-tutorial/Get-AzureVMTutorial.ps1",
-        "runbookDescription": "Authenticates to Azure and lists all the Azure V1 VMs",
-        "sku": "Free"
+        "runbookDescription": "Authenticates to Azure and lists all the Azure V1 VMs"
     },
     "resources": [
         {
@@ -62,7 +71,7 @@
             "tags": {},
             "properties": {
                 "sku": {
-                    "name": "[variables('sku')]"
+                    "name": "[parameters('pricingTier')]"
                 }
             },
             "resources": [

@@ -6,6 +6,9 @@ It contains a sample script, Deploy-ThroughARM, that you can use to get you star
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F101-get-vm-tutorial%2FdeployAutomationResources.json) 
 
+
+https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-get-vm-tutorial/deployAutomationResources.json
+
 ##Resources Deployed
 ###Automation Account
 This is the account that will contain your credentials. If you want to deploy to an existing account, make sure that the Resource Group, region, tags, and SKU in the template are all the same as your existing account, otherwise the properties will be overwritten. 
