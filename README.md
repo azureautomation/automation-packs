@@ -34,7 +34,7 @@ Automation Packs include an Azure Resource Manager template that deploys Automat
   ```
 ##Recommendations for writing your Automation Pack 
 ### Deploying Automation resources
-For simplicity, we recommend you write one parent template that refers to the base templates: [000-base-templates](https://github.com).   This allows you to reuse the core Automation resource templates without having to write your own.  See XXX for an example of this.  
+For simplicity, we recommend you write one parent template that refers to the base templates: [000-base-templates](https://github.com/azureautomation/automation-packs/tree/BethWorkingBranch/000-base-automation-resource-templates).   This allows you to reuse the core Automation resource templates without having to write your own. 
 
 ### Runbooks in Automation Packs
 You can store runbooks referenced in Automation Packs in two different ways:
@@ -44,6 +44,7 @@ You can store runbooks referenced in Automation Packs in two different ways:
 
 
 Best practices for runbooks:
+
 1.  Follow practices outlined [here](http://social.technet.microsoft.com/wiki/contents/articles/26616.quick-tips-and-tricks-for-runbook-writing.aspx). 
 2.  Always include a header with the following: 
 
