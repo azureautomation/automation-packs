@@ -1,0 +1,70 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation account to deploy to."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US"
+            ],
+            "metadata": {
+                "description": "The region the Automaiton account is located in."
+            }
+        },
+        "variableName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the variable"
+            }
+        },
+        "variableType": {
+            "type": "string",
+            "allowedValues": [
+                "string",
+                "integer",
+                "dateTime",
+                "boolean"
+            ],
+            "metadata": {
+                "description": "The variable type."
+            }
+        },
+        "variableValue": {
+            "type": "string",
+            "metadata": {
+                "description": "The value for the variable.  Make sure the value for the variable matches the type selected."
+            }
+        }
+    },
+    "variables": {
+
+    },
+    "resources": [
+
+        {
+            "name": "[concat(parameters('accountName'), '/', parameters('variableName')) ]",
+            "type" : "microsoft.automation/automationAccounts/variables",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('regionId')]",
+            "tags": { },
+            "properties": {
+                "description": "",
+                "isEncrypted": 0,
+                "type": "[parameters('variableType')]",
+                "value": "[parameters('variableValue')]"
+            }
+        }
+    ],
+
+    "outputs": {}
+}

@@ -1,0 +1,105 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation account."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US"
+            ],
+            "metadata": {
+                "description": "The region to deploy the Automation account in."
+            }
+        },
+        "pricingTier": {
+            "type": "string",
+            "allowedValues": [
+                "Free",
+                "Basic"
+            ],
+            "metadata": {
+                "description": "The pricing tier for the account."
+            }
+        },
+        "createRunbookAndDependencies": {
+            "type": "string",
+            "allowedValues": [
+                "RunbookAndCredential",
+                "Runbook"
+            ],
+            "metadata": {
+                "description": "Select RunbookAndCredential to deploy both the credential and the runbook or Runbook if you already have an Azure AD credential in your account."
+            }
+        },
+        "credentialName": {
+            "type": "string",
+            "defaultValue": "DefaultAzureCredential",
+            "metadata": {
+                "description": "The credential allows you to authenticate to Azure. "
+            }
+        },
+        "userName": {
+            "type": "string",
+            "metadata": {
+                "description": "The username for the Azure Automation credential."
+            }
+        },
+        "password": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The password for the Azure Automation credential."
+            }
+        }
+
+    },
+    "variables": {
+        "templatelink": "[concat('https://storage123abc.blob.core.windows.net/containerpublic/','deploy', parameters('createRunbookAndDependencies'),'.json')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-01-01",
+            "name": "nestedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('templatelink')]",
+                    "contentVersion": "1.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('accountName')]"
+                    },
+                    "regionId": {
+                        "value": "[parameters('regionId')]"
+                    },
+                    "pricingTier": {
+                        "value": "[parameters('pricingTier')]"
+                    },
+                    "credentialName": {
+                        "value": "[parameters('credentialName')]"
+                    },
+                    "userName": {
+                        "value": "[parameters('userName')]"
+                    },
+                    "password": {
+                        "value": "[parameters('password')]"
+                    }
+                }
+            }
+        }
+    ],
+
+        
+    "outputs": {}
+}

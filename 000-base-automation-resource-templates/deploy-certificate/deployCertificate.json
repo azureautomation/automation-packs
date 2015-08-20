@@ -1,0 +1,62 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation account to deploy the certificate in."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US"
+            ],
+            "metadata": {
+                "description": "The region the Automaiton account is located in."
+            }
+        },
+        "certificateName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the certificate."
+            }
+        },
+        "base64Value": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The base 64 value for the certificate."
+            }
+        },
+        "thumbprint": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The thumprint value for the certificate."
+            }
+        }
+    },
+    "variables": {
+
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('accountName'), '/', parameters('certificateName'))]",
+            "type": "microsoft.automation/automationAccounts/certificates",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('regionId')]",
+            "tags": { },
+            "properties": {
+                "base64Value": "[parameters('base64Value')]",
+                "thumbprint": "[parameters('thumbprint')]"
+            }
+        }
+    ],
+
+
+    "outputs": { }
+}
