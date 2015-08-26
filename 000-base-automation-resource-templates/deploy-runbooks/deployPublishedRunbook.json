@@ -72,7 +72,7 @@
                 "sourceProject": "[parameters('projectSourceLocation')]"
             },
             "properties": {
-                "runbookType": "script",
+                "runbookType": "Script",
                 "logProgress": "false",
                 "logVerbose": "false",
                 "description": "[parameters('runbookDescription')]",

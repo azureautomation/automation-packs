@@ -73,11 +73,11 @@
     "variables": {
         "moduleTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/BethWorkingBranch/000-base-automation-resource-templates/deploy-module/DeployModule.json",
         "moduleName": "Hello-WorldModule",
-        "moduleURI": "https://github.com/azureautomation/automation-packs/blob/BethWorkingBranch/sample-deploy-module/modules/Hello-WorldModule.zip?raw=true",
+        "moduleURI": "https://github.com/azureautomation/automation-packs/blob/master/101-sample-deploy-automation-resources/sample-deploy-module/modules/Hello-WorldModule.zip?raw=true",
 
         "runbookPublishedTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/BethWorkingBranch/000-base-automation-resource-templates/deploy-runbooks/deployPublishedRunbook.json",
         "runbookName": "Say-HelloSample",
-        "runbookURI": "https://storage123abc.blob.core.windows.net/containerpublic",
+        "runbookURI": "https://storage123abc.blob.core.windows.net/containerpublic/Say-HelloSample.ps1",
         "runbookType": "Script",
         "runbookDescription": "Beth's awesome hello world sample",
         "projectSourceLocation": "https://github.com/azureautomation/automation-packs/blob/BethWorkingBranch",
@@ -114,9 +114,6 @@
                         "parameters": {
                             "accountName": {
                                 "value": "[parameters('accountName')]"
-                            },
-                            "regionId": {
-                                "value": "[parameters('regionId')]"
                             },
                             "moduleName": {
                                 "value": "[variables('moduleName')]"
@@ -180,7 +177,7 @@
                             "contentVersion": "1.0"
                         },
                         "parameters": {
-                            "regionId": {
+                            "accountName": {
                                 "value": "[parameters('accountName')]"
                             },
                             "regionId": {
@@ -208,6 +205,9 @@
                     }
                 }
 
-            ],
+
+            ]
+        }
+    ],
     "outputs": {}
 }
