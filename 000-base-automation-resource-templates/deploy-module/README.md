@@ -17,6 +17,7 @@ To learn about authoring modules for Automation see: [Authoring Integration Modu
 
 Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template.  
 
+moduleTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-module/DeployModule.json"
 
 ```json
                 {

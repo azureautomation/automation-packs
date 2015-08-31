@@ -20,8 +20,8 @@ you want to publish this runbook.  Note you cannot schedule or run jobs on runbo
 
 Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template.  
 
-For published use runbookTemplate = "deployPublishedRunbookTemplate.json"
-For draft use runbookTemplate = "deployDraftRunbookTemplate.json"
+For published use runbookTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployPublishedRunbook.json"
+For draft use runbookTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployDraftRunbook.json"
 
 
 ```json

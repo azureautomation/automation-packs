@@ -18,8 +18,8 @@ want.
 
 Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template. 
 
-Unencrypted value for variableTemplate = "deployVariable.json"
-Encrypted value for variableTemplate = "deployEncryptedVariable.json"
+Unencrypted value for variableTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-variable/deployVariable.json"
+Encrypted value for variableTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-variable/deployEncryptedVariable.json"
  
 ```json
                 {
