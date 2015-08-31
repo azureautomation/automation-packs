@@ -5,7 +5,7 @@
         "accountName": {
             "type": "string",
             "metadata": {
-                "description": "The name of the Azure Automation account to deploy to."
+                "description": "The name of the Azure Automation account."
             }
         },
         "regionId": {
@@ -33,8 +33,9 @@
         },
         "credentialName": {
             "type": "string",
+            "defaultValue": "DefaultAzureCredential",
             "metadata": {
-                "description": "DefaultAzureCredential is the name of the Automation credential used in this runbook. This credential allows you to authenticate to Azure. "
+                "description": "The credential allows you to authenticate to Azure. "
             }
         },
         "userName": {
@@ -44,22 +45,22 @@
             }
         },
         "password": {
-            "type": "secureString",
+            "type": "securestring",
             "metadata": {
                 "description": "The password for the Azure Automation credential."
             }
-        },
-        "jobId": {
-            "type": "string",
-            "metadata": {
-                "description": "The GUID for the runbook job to be started."
-            }
         }
+
     },
     "variables": {
-        "runbookName": "Get-AzureVMTutorial",
-        "scriptUri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-get-vm-tutorial/Runbooks/Get-AzureVMTutorial.ps1",
-        "runbookDescription": "Authenticates to Azure and lists all the Azure V1 VMs",
+        "runbookName": "Copy-ItemToAzureVM",
+        "runbookURI": "https://gallery.technet.microsoft.com/scriptcenter/Copy-a-File-to-an-Azure-VM-d2ad9e1f/file/115859/2/Copy-ItemToAzureVM.ps1",
+        "runbookDescription": "his Azure Automation runbook copies a file from the local runbook host to an Azure virtual machine. This runbook is intended to run after a file is copied to the local host so ensure that you have copied the file to the runbook host before calling this.",
+        "childRunbookName": "Connect-AzureVM",
+        "childDescription": "This runbook sets up a connection to an Azure virtual machine. It sets up a connection to the Azure subscription and then imports the certificate used for the Azure VM so remote PowerShell calls can be made to it.",
+        "childRunbookURI": "https://gallery.technet.microsoft.com/scriptcenter/Connect-to-an-Azure-85f0782c/file/131573/1/Connect-AzureVM.ps1"
+
+
     },
     "resources": [
         {
@@ -67,31 +68,59 @@
             "type": "Microsoft.Automation/automationAccounts",
             "apiVersion": "2015-01-01-preview",
             "location": "[parameters('regionId')]",
-            "dependsOn": [],
-            "tags": {},
+            "dependsOn": [ ],
+            "tags": { },
             "properties": {
                 "sku": {
                     "name": "[parameters('pricingTier')]"
                 }
             },
+
             "resources": [
                 {
-                    "name": "[variables('runbookName')]",
+                    "name": "[variables('childRunbookName')]",
                     "type": "runbooks",
                     "apiVersion": "2015-01-01-preview",
                     "location": "[parameters('regionId')]",
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
                     ],
-                    "tags": {},
+                    "tags": {
+                        "GitHubProject": "https://github.com/azureautomation/automation-packs/tree/master/200-connect-azure-vm"
+                    },
+                    "properties": {
+                        "runbookType": "Script",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[variables('childDescription')]",
+                        "publishContentLink": {
+                            "uri": "[variables('childRunbookURI')]",
+                            "version": "1.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "name": "[variables('runbookName')]",
+                    "type": "runbooks",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('childRunbookName'))]"
+                    ],
+                    "tags": {
+                        "GitHubProject": "https://github.com/azureautomation/automation-packs/tree/master/200-copy-file-to-azure-vm"
+                    },
                     "properties": {
                         "runbookType": "Script",
                         "logProgress": "false",
                         "logVerbose": "false",
                         "description": "[variables('runbookDescription')]",
-                        "publishContentLink": {
-                            "uri": "[variables('scriptUri')]",
-                            "version": "1.0.0.0"
+                        "draft": {
+                            "draftContentLink": {
+                                "uri": "[variables('runbookURI')]",
+                                "version": "1.0.0.0"
+                            }
                         }
                     }
                 },
@@ -103,32 +132,17 @@
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
                     ],
-                    "tags": {},
+                    "tags": { },
                     "properties": {
                         "userName": "[parameters('userName')]",
                         "password": "[parameters('password')]"
                     }
-                },
-                {
-                    "name": "[parameters('jobId')]",
-                    "type": "jobs",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/',variables('runbookName'))]"
-                    ],
-                    "tags": {
-                        "key": "value"
-                    },
-                    "properties": {
-                        "runbook": {
-                            "name": "[variables('runbookName')]"
-                        }
-                    }
                 }
+
+
             ]
         }
     ],
+           
     "outputs": {}
 }

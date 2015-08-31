@@ -1,0 +1,58 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation account to deploy the connection to."
+            }
+        },
+        "connectionName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation connection asset. The connection type must be deployed before you can deploy the connection.  In this case, we are using Azure since that is created for all users."
+            }
+        },
+        "connectionCertificateName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the certificate used for Azure auth."
+            }
+        },
+        "connectionSubscriptionId": {
+            "type": "string",
+            "metadata": {
+                "description": "The ID of the Azure subscription you want to connect to."
+            }
+        }
+    },
+    "variables": {
+
+    },
+
+    "resources": [
+
+        {
+            "name": "[concat(parameters('accountName'), '/', parameters('connectionName'))]",
+            "type": "microsoft.automation/automationAccounts/connections",
+            "apiVersion": "2015-01-01-preview",
+            "tags": { },
+            "properties": {
+                "name": "[parameters('connectionName')]",
+                "description": "Dummy Azure connection",
+                "isGlobal": false,
+                "connectionType": {
+                    "name": "Azure"
+                },
+                "fieldDefinitionValues": {
+                    "AutomationCertificateName": "[parameters('connectionCertificateName')]",
+                    "SubscriptionID": "[parameters('connectionSubscriptionId')]"
+                }
+            }
+
+        }
+    ],
+
+    "outputs": { }
+}

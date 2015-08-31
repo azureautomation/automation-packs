@@ -1,0 +1,46 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Automation account to deploy the module to."
+            }
+        },
+        "moduleName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the module to deploy.  This must be the same name as the .zip foldername in the URI below."
+            }
+        },
+        "moduleUri": {
+            "type": "string",
+            "metadata": {
+                "description": "The URL for the module zip file to upload to Azure Automation."
+            }
+        }
+
+    },
+    "variables": {
+
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('accountName'), '/', parameters('moduleName'))]",
+            "type": "microsoft.automation/automationAccounts/modules",
+            "apiVersion": "2015-01-01-preview",
+            "tags": { },
+            "properties": {
+                "contentLink": {
+                    "uri": "[parameters('moduleUri')]"
+                }
+            }
+        }
+
+    ],
+
+
+    "outputs": {
+    }
+}
