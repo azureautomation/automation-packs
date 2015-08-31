@@ -2,7 +2,7 @@
 Automation Packs include an Azure Resource Manager template that deploys Automation resources to Azure.  The template can include any Automation resource needed for an Automation solution.  Automation resources include:
 
 - Runbooks
-- DSC Configurationsi 
+- DSC Configurations
 - Runbook jobs
 - Integration Modules
 - Schedules
