@@ -31,16 +31,6 @@
                 "description": "The pricing tier for the account."
             }
         },
-        "createRunbookAndDependencies": {
-            "type": "string",
-            "allowedValues": [
-                "RunbookAndCredential",
-                "Runbook"
-            ],
-            "metadata": {
-                "description": "Select RunbookAndCredential to deploy both the credential and the runbook or Runbook if you already have an Azure AD credential in your account."
-            }
-        },
         "credentialName": {
             "type": "string",
             "defaultValue": "DefaultAzureCredential",
@@ -63,43 +53,96 @@
 
     },
     "variables": {
-        "templatelink": "[concat('https://storage123abc.blob.core.windows.net/containerpublic/','deploy', parameters('createRunbookAndDependencies'),'.json')]"
+        "runbookName": "Copy-ItemToAzureVM",
+        "runbookURI": "https://gallery.technet.microsoft.com/scriptcenter/Copy-a-File-to-an-Azure-VM-d2ad9e1f/file/115859/2/Copy-ItemToAzureVM.ps1",
+        "runbookDescription": "his Azure Automation runbook copies a file from the local runbook host to an Azure virtual machine. This runbook is intended to run after a file is copied to the local host so ensure that you have copied the file to the runbook host before calling this.",
+        "childRunbookName": "Connect-AzureVM",
+        "childDescription": "This runbook sets up a connection to an Azure virtual machine. It sets up a connection to the Azure subscription and then imports the certificate used for the Azure VM so remote PowerShell calls can be made to it.",
+        "childRunbookURI": "https://gallery.technet.microsoft.com/scriptcenter/Connect-to-an-Azure-85f0782c/file/131573/1/Connect-AzureVM.ps1"
+
+
     },
     "resources": [
         {
-            "apiVersion": "2015-01-01",
-            "name": "nestedTemplate",
-            "type": "Microsoft.Resources/deployments",
+            "name": "[parameters('accountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('regionId')]",
+            "dependsOn": [ ],
+            "tags": { },
             "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[variables('templatelink')]",
-                    "contentVersion": "1.0"
+                "sku": {
+                    "name": "[parameters('pricingTier')]"
+                }
+            },
+
+            "resources": [
+                {
+                    "name": "[variables('childRunbookName')]",
+                    "type": "runbooks",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "tags": {
+                        "GitHubProject": "https://github.com/azureautomation/automation-packs/tree/master/200-connect-azure-vm"
+                    },
+                    "properties": {
+                        "runbookType": "Script",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[variables('childDescription')]",
+                        "publishContentLink": {
+                            "uri": "[variables('childRunbookURI')]",
+                            "version": "1.0.0.0"
+                        }
+                    }
                 },
-                "parameters": {
-                    "accountName": {
-                        "value": "[parameters('accountName')]"
+                {
+                    "name": "[variables('runbookName')]",
+                    "type": "runbooks",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('childRunbookName'))]"
+                    ],
+                    "tags": {
+                        "GitHubProject": "https://github.com/azureautomation/automation-packs/tree/master/200-copy-file-to-azure-vm"
                     },
-                    "regionId": {
-                        "value": "[parameters('regionId')]"
-                    },
-                    "pricingTier": {
-                        "value": "[parameters('pricingTier')]"
-                    },
-                    "credentialName": {
-                        "value": "[parameters('credentialName')]"
-                    },
-                    "userName": {
-                        "value": "[parameters('userName')]"
-                    },
-                    "password": {
-                        "value": "[parameters('password')]"
+                    "properties": {
+                        "runbookType": "Script",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[variables('runbookDescription')]",
+                        "draft": {
+                            "draftContentLink": {
+                                "uri": "[variables('runbookURI')]",
+                                "version": "1.0.0.0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "[parameters('credentialName')]",
+                    "type": "credentials",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "tags": { },
+                    "properties": {
+                        "userName": "[parameters('userName')]",
+                        "password": "[parameters('password')]"
                     }
                 }
-            }
+
+
+            ]
         }
     ],
-
-        
+           
     "outputs": {}
 }
