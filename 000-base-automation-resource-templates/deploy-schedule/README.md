@@ -1,20 +1,65 @@
-# Creates a Write-HelloWorld runbook and a schedule for it
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F101-sample-deploy-automation-resources%2Fsample-deploy-schedule%2FdeployRunbookOnSchedule.json) 
+# Create an Automation schedule and associate it with a runbook,
+
+This sample shows how to deploy an Azure Automation schedule.
 
 
-This sample shows how to create an Azure Automation schedule and associate it with a runbook.    
+## Parameter details 
 
-##Resources Deployed
-###Automation Account
-This is the account that will contain your runbook and schedule. 
+| Name           	| Type          | Details 																				|
+| -------------  	|:-------------:| -----------------------------------------------------------------:					|
+| accountName      	| string 		| The name of the Automation account to deploy the schedule to. 						|
+| scheduleName		| string      	| The name of the schedule. 															|
+| runbookName	 	| string	    | he name of the runbook to associate the schedule with.								|
+| startTime	 		| securestring  | The time to start the schedule on.  This is a datetime in Automation. 				|
+| frequency	 		| string	    | The frequency of the schedule.	 													|
+| interval	 		| securestring  | The interval for the schedule to repeat on. 											|
+| jobScheduleGuid	| string	    | The GUID for the job schedule.  This identifier links the schedule to the runbook. 	|
 
-If you want to deploy to an existing account, make sure that the tags, and pricing tier in the template are all the same as your existing account. 
 
-###Runbook: Write-HelloWorld
-Creates a published version of Write-HelloWorld.  The schedule will be linked to this runbook. 
 
-###Schedule
-Creates a schedule with the name, time, and frequency of your choice.  
+## How to call this template from your template
 
-###Job Schedule
-Links the Write-HelloWorld runbook to the schedule created above.  
+Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template.  
+
+
+```json
+                {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplateschedule",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('scheduleTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+                            "scheduleName": {
+                                "value": "[parameters('scheduleName')]"
+                            },
+							"runbookName": {
+                                "value": "[parameters('runbookName')]"
+                            },
+                            "startTime": {
+                                "value": "[parameters('startTime')]"
+                            },							
+							"frequency": {
+                                "value": "[parameters('frequency')]"
+                            },
+                            "interval": {
+                                "value": "[parameters('interval')]"
+                            },
+                            "jobScheduleGuid": {
+                                "value": "[parameters('jobScheduleGuid')]"
+                            }
+                        }
+                    }
+                }
+
+```

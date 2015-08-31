@@ -1,33 +1,67 @@
-# Creates three runbooks 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F101-sample-deploy-automation-resources%2Fsample-deploy-runbooks%2FdeployRunbooks.json) 
+# Deploy a runbook to an Automation Account
+
+This sample shows how to deploy a runbook to Azure Automation.   You can create a runbook in draft state or in published state.   Update the URL in the templateLink URI to point to either the published or draft template depending on how
+you want to publish this runbook.  Note you cannot schedule or run jobs on runbooks that only contain a draft (New) version.  
 
 
-This sample shows how you can deploy a runbook in its 3 different states: empty draft, draft with content, and published runbook.   
+## Parameter details 
 
-##Resources Deployed
-###Automation Account
-This is the account that will contain your runbooks. 
+| Name          			| Type          | Details 																													|
+| ------------- 			|:-------------:| ---------------------------------------------------------------------------------:										|
+| accountName   			| string 		| The name of the Automation account to deploy the runbook to. 																|
+| regionId					| string 		| The region the Automaiton account is located in. 																			|
+| runbookName   			| string 		| The name for the runbook. The name must match the name in the URI. 														|
+| runbookURI   				| string 		| The URI for the runbook. 																									|
+| runbookType				| string      	| The type of runbook.  Runbooks can be Graph, PowerShell scripts, or PowerShell Workflows.									|
+| projectSourceLocation	 	| string	    | The link back to the original source project.  A tag is generated with this value to help you locate the original project.|
+| runbookDescription		| string	    | The runbook description.																									|
 
-If you want to deploy to an existing account, make sure that the tags, and SKU (pricing tier) in the template are all the same as your existing account, otherwise the properties will be overwritten. 
+## How to call this template from your template
 
-###Runbook 1 - Blank runbook
-This creates a runbook stub with the name specified in the parameter files. This runbook is created as a graphical runbook. 
+Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template.  
 
-###Runbook 2 - Runbook created in draft mode
-This creates a PowerShell Workflow runbook in draft mode.  The runbook that is deployed in this case is called DraftRunbook. 
-###Runbook 3 - Runbook created in published mode
-This creates a PowerShell runbook in published mode.  The runbook that is deployed in this case is called PublishedRunbook. 
+For published use runbookTemplate = "deployPublishedRunbookTemplate.json"
+For draft use runbookTemplate = "deployDraftRunbookTemplate.json"
 
-###Aditional notes
-Note that the optional hash value for runbook #2 and #3 is removed from the deployment template.  If you would like to use a hash value, convert your runbook to binary and use the SHA 256 algorithm against the binary file to generate a hash value.  
 
-Example deployment template snippet: 
+```json
+                {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplateRunbook",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('runbookTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+							"regionId": {
+                                "value": "[parameters('regionId')]"
+                            },
+                            "runbookName": {
+                                "value": "[parameters('runbookName')]"
+                            },
+							"runbookUri": {
+                                "value": "[parameters('runbookUri')]"
+                            },                            
+							"runbookType": {
+                                "value": "[parameters('runbookType')]"
+                            },
+							"projectSourceLocation": {
+                                "value": "[parameters('projectSourceLocation')]"
+                            },
+							"runbookDescription": {
+                                "value": "[parameters('runbookDescription')]"
+                            }
+                        }
+                    }
+                }
 
-    "publishContentLink": {
-        "uri": "http://mystorageaccount/MyRunbook.ps1",
-        "version": "1.0.0.0",
-        "hash": {
-            "algorithm": "sha256",
-            "value": "6E7753DAB302EAD767F5A2CF6A950C496EDE541EAC108D45B62762D7B53495F0"
-        }
-    }
+```

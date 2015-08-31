@@ -1,15 +1,55 @@
-# Create an Automation variable
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F101-sample-deploy-automation-resources%2Fsample-deploy-variable%2FdeployVariable.json) 
+
+# Automation variable
+
+This template creates a variable in an existing Automation account.  You can deploy an unencrypted variable or an encyrpted variable.  Update the variableTemplate in the template Link URI to deploy the type of variable that you 
+want.  
 
 
-This sample shows how to deploy an Azure Automation variable asset of type string.  
+## Parameter details 
 
-##Resources Deployed
-###Automation Account
-This is the account that will contain your variable. 
+| Name           		| Type          		 | Details 															|
+| -------------  		|:-------------:		 | ----------------------------------------------------------------:|
+| accountName      		| string 				 | The name of the Automation account to deploy the variable to. 	|
+| variableName   		| string      			 | The name of the variable. 										|
+| variableType 			| string		  		 | The type of variable. 							    			|
+| variableValue  		| string or securestring | The value of the variable.  										|
 
-If you want to deploy to an existing account, make sure that the Resource Group, region, tags, and pricing tier in the template are all the same as the account you want to deploy the variable in.   
+## How to call this template from your template
 
-###Variable
-The string variable to deploy to Azure Automation.  
+Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template. 
 
+Unencrypted value for variableTemplate = "deployVariable.json"
+Encrypted value for variableTemplate = "deployEncryptedVariable.json"
+ 
+```json
+                {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplatevariable",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('variableTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+                            "variableName": {
+                                "value": "[parameters('variableName')]"
+                            },                            
+							"variableType": {
+                                "value": "[parameters('variableType')]"
+                            },
+                            "variableValue": {
+                                "value": "[parameters('variableValue')]"
+                            }
+                        }
+                    }
+                }
+
+```

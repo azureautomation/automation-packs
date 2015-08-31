@@ -3,6 +3,8 @@
 
 This sample shows how you can deploy a runbook, a module that the runbook needs, and create an assign a schedule to the runbook. 
 
+This version of the sample shows how to use nested deployment templates to deploy each resource needed. It calls the templates provided by the Automation team for the Automation account, runbook, and schedule.
+
 
 ##Resources Deployed
 
@@ -15,10 +17,9 @@ This is the account that will contain your runbook, module and schedule. If you 
 This runbook writes "Hello $Name" to the output stream.  
 
 ###Module 
-
 The module is deployed from the sample-deploy-module in https://github.com/azureautomation/automation-packs.  
 
-###Schedule
+###Schedule (and link to runbook)
 A schedule is deployed and linked to the runbook.   
 
 To associated the schedule with a runbook, you need a GUID.  You can use [System.Guid]::NewGuid() or $JobGUID = (New-Guid).Guid (in PowerShell 5.0) to generate this.   
