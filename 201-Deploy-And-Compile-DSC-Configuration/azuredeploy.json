@@ -32,7 +32,6 @@
         },
         "configurationURI": {
             "type": "string",
-            //had an issue when the uri contained %20 (is not a valid fully-qualified http, https, or ftp URL)
             "defaultValue": "https://raw.githubusercontent.com/Stijnc/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration/Configurations/webrolefull.ps1",
                              
             "metadata": {
@@ -82,11 +81,9 @@
                     ],
                     "properties": {
                         "logVerbose": "false",
-                        "description": "[parameters('configurationDescription')]",
-                        // preview only limited to published configurations(!?) --> taken from the azure-powershell cmdlets
+                        "description": "[parameters('configurationDescription')]",                    
                         "state": "Published",
                         "overwrite": "[variables('dscOverwrite')]",
-                        //not really consistent with other resources (publishcontentlink,contentlink, complex object draft,...)
                         "Source": {
                             "type": "uri",
                             "Value": "[parameters('configurationURI')]"
