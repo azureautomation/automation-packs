@@ -1,0 +1,121 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Automation account to use.  If this account exists, check the pricing tier and tags to make sure they match the exisitng account."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US"
+            ],
+            "metadata": {
+                "description": "The region the Automation account is located in."
+            }
+        },     
+        "jobId": {
+            "type": "string",
+            "metadata": {
+                "description": "The GUID for the conmpilation job."
+            }
+        }
+    },
+    "variables": {
+		
+		"pricingTier":"Free",
+		
+        "configurationTemplate": "https://raw.githubusercontent.com/Stijnc/automation-packs/master/000-base-automation-resource-templates/deploy-configuration/deployConfiguration.json",
+        "configurationName": "webrolefull",
+        "configurationDescription": "Full web server deployment configuration",
+        "configurationURI":"https://raw.githubusercontent.com/stijnc/dsc-configuration/master/webrolefull.ps1",
+        
+		"compilationjobTemplate": "https://raw.githubusercontent.com/Stijnc/automation-packs/master/000-base-automation-resource-templates/deploy-compilationjob/deployCompilationjob.json"
+    },
+    "resources": [
+        {
+            "name": "[parameters('accountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('regionId')]",
+            "dependsOn": [ ],
+            "tags": { },
+            "properties": {
+                "sku": {
+                    "name": "[variables('pricingTier')]"
+                }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplateConfiguration",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('configurationTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+                            "location": {
+                                  "value": "[parameters('regionId')]"
+                            },
+                            "configurationName": {
+                                "value": "[variables('configurationName')]"
+                            },
+                            "configurationDescription": {
+                                "value": "[variables('configurationDescription')]"
+                            },
+                            "configurationURI": {
+                                "value": "[variables('configurationURI')]"
+                            }
+                        }
+                    }
+                },
+                 {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplateCompilationjob",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('compilationjobTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+                            "location": {
+                                  "value": "[parameters('regionId')]"
+                            },
+                            "configurationName": {
+                                "value": "[variables('configurationName')]"
+                            },
+                            "jobId":{
+                                "value": "[parameters('jobId')]"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {}
+}
