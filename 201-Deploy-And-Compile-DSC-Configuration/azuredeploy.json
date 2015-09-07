@@ -32,8 +32,9 @@
         },
         "configurationURI": {
             "type": "string",
-            //contains a windowsfeature that fails (but good enough for testing)
-            "defaultValue": "https://raw.githubusercontent.com/Stijnc/dsc-configuration/master/webrolefull.ps1",
+            //had an issue when the uri contained %20 (is not a valid fully-qualified http, https, or ftp URL)
+            "defaultValue": "https://raw.githubusercontent.com/Stijnc/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration/Configurations/webrolefull.ps1",
+                             
             "metadata": {
                 "description": "The URI for the DSC configuration "
             }
