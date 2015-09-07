@@ -41,6 +41,7 @@
             "name": "[concat(parameters('accountName'), '/', parameters('configurationName'))]",
             "type": "Microsoft.Automation/AutomationAccounts/Configurations",
             "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('Location')]",
             "tags": {},
             "properties": {
                 "logVerbose": "false",
