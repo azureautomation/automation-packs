@@ -1,0 +1,113 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "defaultValue": "Dev-Automation",
+            "metadata": {
+                "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "defaultValue": "East US 2",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US"
+            ],
+            "metadata": {
+                "description": "The region the Automation account is located in."
+            }
+        },
+        "configurationName": {
+            "type": "string",
+            "defaultValue": "webrolefull",
+            "metadata": {
+                "description": "The name of the DSC Configuration. The name must match the name in the URI."
+            }
+        },
+        "configurationURI": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/Stijnc/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration/Configurations/webrolefull.ps1",
+                             
+            "metadata": {
+                "description": "The URI for the DSC configuration "
+            }
+        },
+        "configurationDescription": {
+            "type": "string",
+            "defaultValue": "test",
+            "metadata": {
+                "description": "The description of the runbook."
+            }
+        },
+        "jobId": {
+            "type": "string",
+            "metadata": {
+                "description": "the job id to compile the configuration"
+            }
+        }
+    },
+    "variables": {
+        "pricingTier": "Free",
+        "dscOverwrite": "true"
+    },
+    "resources": [
+        {
+            "name": "[parameters('accountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('regionId')]",
+            "dependsOn": [],
+            "tags": {},
+            "properties": {
+                "sku": {
+                    "name": "[variables('pricingTier')]"
+                }
+            },
+            "resources": [
+                {
+                    "name": "[parameters('configurationName')]",
+                    "type": "Configurations",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "tags": {},
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "logVerbose": "false",
+                        "description": "[parameters('configurationDescription')]",                    
+                        "state": "Published",
+                        "overwrite": "[variables('dscOverwrite')]",
+                        "Source": {
+                            "type": "uri",
+                            "Value": "[parameters('configurationURI')]"
+                        }
+                    }
+                },
+                {
+                    "name": "[parameters('jobId')]",
+                    "type": "Compilationjobs",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "parameters('regionId')]",
+                    "tags": {},
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Configurations/', parameters('configurationName'))]"
+                    ],
+                    "properties": {
+                        "configuration": {
+                            "name": "[parameters('configurationName')]"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {}
+}

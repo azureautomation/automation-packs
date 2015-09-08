@@ -1,0 +1,60 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation account to deploy the configuration in."
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of the Azure Automation account."
+            }
+        },
+        "configurationName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the DSC configuration. The name must match the configuration name in the script"
+            }
+        },
+        "configurationDescription": {
+            "type": "string",
+            "metadata": {
+                "description": "The description of the DSC configuration."
+            }
+        },
+        "configurationURI": {
+            "type": "string",
+            "metadata": {
+                "description": "The URI for the DSC configuration."
+            }
+        }
+    },
+    "variables": {
+        "dscOverwrite": "true"
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('accountName'), '/', parameters('configurationName'))]",
+            "type": "Microsoft.Automation/AutomationAccounts/Configurations",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('Location')]",
+            "tags": {},
+            "properties": {
+                "logVerbose": "false",
+                "description": "[parameters('configurationDescription')]",
+                "state": "Published",
+                "overwrite": "[variables('dscOverwrite')]",
+                "Source": {
+                    "type": "uri",
+                    "Value": "[parameters('configurationURI')]"
+                }
+            }
+        }
+    ],
+
+    "outputs": {}
+}
