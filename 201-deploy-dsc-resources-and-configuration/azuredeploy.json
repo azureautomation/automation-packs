@@ -25,14 +25,14 @@
         },
         "configurationName": {
             "type": "string",
-            "defaultValue": "webrolefull",
+            "defaultValue": "myTimezone",
             "metadata": {
                 "description": "The name of the DSC Configuration. The name must match the name in the URI."
             }
         },
         "configurationURI": {
             "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration/Configurations/webrolefull.ps1",
+            "defaultValue": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-Import-dsc-resources-and-configuration/Configurations/myTimezone.ps1",
                              
             "metadata": {
                 "description": "The URI for the DSC configuration "
@@ -40,9 +40,9 @@
         },
         "configurationDescription": {
             "type": "string",
-            "defaultValue": "test",
+            "defaultValue": "Set the timezone using DSC. for a full list of supported values execute [System.TimeZoneInfo]::GetSystemTimeZones().Id in PowerShell",
             "metadata": {
-                "description": "The description of the configuration."
+                "description": "The description of the configuration"
             }
         },
         "jobId": {
@@ -54,6 +54,9 @@
     },
     "variables": {
         "pricingTier": "Free",
+        "moduleName":"xTimeZone",
+        "moduleUri":"https://devopsgallerystorage.blob.core.windows.net/azureautomationpackages/xTimeZone%5C1.2.0%5CxTimeZone.zip",
+
         "dscOverwrite": "true"
     },
     "resources": [
@@ -70,6 +73,22 @@
                 }
             },
             "resources": [
+                 {
+                    "name": "[variables('moduleName')]",
+                    "type": "modules",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "tags": {
+                    },
+                    "properties": {
+                        "contentLink": {
+                            "uri": "[variables('moduleUri')]"
+                        }
+                    }
+                },
                 {
                     "name": "[parameters('configurationName')]",
                     "type": "Configurations",
@@ -77,7 +96,8 @@
                     "location": "[parameters('regionId')]",
                     "tags": {},
                     "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Modules/', variables('ModuleName'))]"
                     ],
                     "properties": {
                         "logVerbose": "false",
@@ -98,6 +118,7 @@
                     "tags": {},
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Modules/', variables('ModuleName'))]",
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Configurations/', parameters('configurationName'))]"
                     ],
                     "properties": {

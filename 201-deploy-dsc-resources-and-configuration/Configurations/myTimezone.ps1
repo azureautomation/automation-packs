@@ -5,8 +5,10 @@ Configuration myTimezone {
 
     Import-DscResource -ModuleName xTimezone
 
-    xTimeZone zone {
-        IsSingleInstance = 'Yes'
-        TimeZone = $zone
+    node zone {
+        xTimeZone zone {
+            IsSingleInstance = 'Yes'
+            TimeZone = $zone
+        }  
     }
 }
