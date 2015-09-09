@@ -1,0 +1,20 @@
+{
+    "accountName": {
+        "value": "MyAutomationAccount"
+    },
+    "regionId": {
+        "value": "East US 2"
+    },
+    "configurationName": {
+        "value": "myTimezone"
+    },
+    "configurationURI": {
+        "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-deploy-dsc-resources-and-configuration/Configurations/myTimezone.ps1"
+    },
+    "configurationDescription": {
+        "value": "Configuration to set the timezone"
+    },
+    "jobId": {
+        "value": "7c02ac25-646d-4335-b948-7c589e2806a6"
+    }
+}
