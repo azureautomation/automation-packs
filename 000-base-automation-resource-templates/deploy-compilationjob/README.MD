@@ -15,7 +15,7 @@ This sample shows how to deploy a compilation job to Azure Automation.
 
 Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template.  
 
-configurationTemplate = "..deploycompilationjob.json" (the link to the Azure Automation compilation template template)
+configurationTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-compilationjob/deployCompilationjob.json"
 
 ```json
                 {

@@ -32,12 +32,12 @@
 		
 		"pricingTier":"Free",
 		
-        "configurationTemplate": "https://raw.githubusercontent.com/Stijnc/automation-packs/master/000-base-automation-resource-templates/deploy-configuration/deployConfiguration.json",
+        "configurationTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-configuration/deployConfiguration.json",
         "configurationName": "webrolefull",
         "configurationDescription": "Full web server deployment configuration",
-        "configurationURI":"https://raw.githubusercontent.com/stijnc/dsc-configuration/master/webrolefull.ps1",
+        "configurationURI":"https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-deploy-and-compile-DSC-configuration-using-base-templates/Configurations/webrolefull.ps1",
         
-		"compilationjobTemplate": "https://raw.githubusercontent.com/Stijnc/automation-packs/master/000-base-automation-resource-templates/deploy-compilationjob/deployCompilationjob.json"
+		"compilationjobTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-compilationjob/deployCompilationjob.json"
     },
     "resources": [
         {
