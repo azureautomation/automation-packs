@@ -1,5 +1,5 @@
-# Start Azure Classic VM Graph Runbook
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F201-start-azure-vm-graphical%2FdeployAutomationResources.json) 
+# Stop Azure Classic VM Graph Runbook
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F201-stop-azure-vm-graphical%2FdeployAutomationResources.json) 
 
 
 This is an Azure Automation graph runbook that gets all of your Azure VMs or just the VMs in a service and then stops the ones that are started.  You can set this on a schedule to stop the VMs when you want.  Use in conjunction with StartAzureClassicVM runbook to start and stop VMs as you need them.

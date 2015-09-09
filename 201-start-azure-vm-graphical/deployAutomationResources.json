@@ -67,16 +67,17 @@
 
     },
     "variables": {
+        "runbookTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployDraftRunbook.json",
         "runbookName": "StartAzureClassicVM",
-        "scriptUri": "https://gallery.technet.microsoft.com/scriptcenter/Start-Azure-Classic-VM-c6067b3d/file/141789/1/StartAzureClassicVM.graphrunbook",
+        "runbookUri": "https://gallery.technet.microsoft.com/scriptcenter/Start-Azure-Classic-VM-c6067b3d/file/141789/1/StartAzureClassicVM.graphrunbook",
         "runbookType": "Graph",
         "runbookDescription": "This is an Azure Automation graph runbook that gets all of your Azure VMs or just the VMs in a service and then starts the ones that are stopped. You can import and use this runbook only in the Azure Preview Portal.",
 
         "credentialTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-credential/deployCredential.json",
 
         "variableTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-variable/deployVariable.json",
-        "variableType":  "String"
-    
+        "variableType": "string"
+
     },
     "resources": [
         {
