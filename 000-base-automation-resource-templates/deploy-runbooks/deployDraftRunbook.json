@@ -48,12 +48,6 @@
             "metadata": {
                 "description": "The description of the runbook."
             }
-        },
-        "projectSourceLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "The link back to the original source project"
-            }
         }
 
     },
@@ -69,7 +63,6 @@
             "apiVersion": "2015-01-01-preview",
             "location": "[parameters('regionId')]",
             "tags": {
-                "sourceProject": "[parameters('projectSourceLocation')]"
             },
             "properties": {
                 "runbookType": "[parameters('runbookType')]",

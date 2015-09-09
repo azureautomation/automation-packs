@@ -18,7 +18,8 @@ you want to publish this runbook.  Note you cannot schedule or run jobs on runbo
 
 ## How to call this template from your template
 
-Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template.  
+Copy and paste the following section into the resources block in your parent template.  Make sure the values of **name** in the **variables('name')** or **parameters('name')** match the names you have specified your template
+and how they are specified (are they stored in a variable or parameter).  
 
 For published use runbookTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployPublishedRunbook.json"
 For draft use runbookTemplate = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployDraftRunbook.json"
@@ -42,23 +43,20 @@ For draft use runbookTemplate = "https://raw.githubusercontent.com/azureautomati
                             "accountName": {
                                 "value": "[parameters('accountName')]"
                             },
-							"regionId": {
+                            "regionId": {
                                 "value": "[parameters('regionId')]"
                             },
                             "runbookName": {
-                                "value": "[parameters('runbookName')]"
+                                "value": "[variables('runbookName')]"
                             },
-							"runbookUri": {
-                                "value": "[parameters('runbookUri')]"
-                            },                            
-							"runbookType": {
-                                "value": "[parameters('runbookType')]"
+                            "runbookUri": {
+                                "value": "[variables('runbookUri')]"
                             },
-							"projectSourceLocation": {
-                                "value": "[parameters('projectSourceLocation')]"
+                            "runbookType": {
+                                "value": "[variables('runbookType')]"
                             },
-							"runbookDescription": {
-                                "value": "[parameters('runbookDescription')]"
+                            "runbookDescription": {
+                                "value": "[variables('runbookDescription')]"
                             }
                         }
                     }

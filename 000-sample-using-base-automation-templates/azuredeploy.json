@@ -80,7 +80,6 @@
         "runbookURI": "https://storage123abc.blob.core.windows.net/containerpublic/Say-HelloSample.ps1",
         "runbookType": "Script",
         "runbookDescription": "Beth's awesome hello world sample",
-        "projectSourceLocation": "https://github.com/azureautomation/automation-packs/blob/BethWorkingBranch",
 
         "scheduleRunbookTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/BethWorkingBranch/000-base-automation-resource-templates/deploy-schedule/deployRunbookOnSchedule.json"
     },
@@ -152,9 +151,6 @@
                             },
                             "runbookType": {
                                 "value": "[variables('runbookType')]"
-                            },
-                            "projectSourceLocation": {
-                                "value": "[variables('projectSourceLocation')]"
                             },
                             "runbookDescription": {
                                 "value": "[variables('runbookDescription')]"
