@@ -23,7 +23,7 @@ This graphical runbook is loaded to Azure Automation as a draft runbook.
 ### Credential
 An Automation credential asset called AzureCredential that contains the Azure AD user credential with authorization for this subscription. To use an asset with a different name you can pass the asset name as a runbook input parameter or change the default value for the input parameter.
 
-To learn about how to create this user, see [Get set up to automate Azure]("http://aka.ms/getsetuptoautomate") and check out this blog post [Authenticating to Azure using Active Directory]("http://azure.microsoft.com/blog/2014/08/27/azure-automation-authenticating-to-azure-using-azure-active-directory/").  
+To learn about how to create this user, see [Get set up to automate Azure](http://aka.ms/getsetuptoautomate) and check out this blog post [Authenticating to Azure using Active Directory](http://azure.microsoft.com/blog/2014/08/27/azure-automation-authenticating-to-azure-using-azure-active-directory/).  
 
 ### Variable
 An Automation variable asset called **AzureSubscriptionId** that contains the GUID for this Azure subscription.  To use an asset with a different name you can pass the asset name as a runbook input parameter or change the default value for the input parameter.

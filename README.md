@@ -76,7 +76,7 @@ Best practices for runbooks:
 You can store modules used in your runbook in two different ways: 
 
 1. Create a Module subfolder and place all your modules in the folder. 
-2. The [PowerShell GitHub repository](https://github.com/powershell) for modules.
+2. Place your modules on the [PowerShell GitHub repository](https://github.com/powershell).
 
 To deploy a module, you must also have the zip of the module folder included to reference in the Azure Resource Manager deployment template.  For more on creating modules for Azure Automation see [Authoring Integration Modules](http://azure.microsoft.com/blog/2014/12/15/authoring-integration-modules-for-azure-automation/).  
 

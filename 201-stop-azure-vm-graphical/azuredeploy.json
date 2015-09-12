@@ -67,7 +67,7 @@
 
     },
     "variables": {
-        "runbookTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/BethWorkingBranch/000-base-automation-resource-templates/deploy-runbooks/deployDraftRunbook.json",
+        "runbookTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployDraftRunbook.json",
         "runbookName": "StopAzureClassicVM",
         "runbookUri": "https://gallery.technet.microsoft.com/scriptcenter/Stop-Azure-Classic-VM-397819bd/file/141790/1/StopAzureClassicVM.graphrunbook",
         "runbookType": "Graph",
