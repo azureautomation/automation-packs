@@ -156,7 +156,7 @@
             "isEncrypted": 0,
             "type": "[parameters('variableType')]",
             "value": "[parameters('variableValue')]"
-            
+
           }
         },
         {
@@ -233,5 +233,6 @@
       ]
     }
   ],
-  "outputs": { }
+  "outputs": {
+  }
 }
