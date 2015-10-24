@@ -38,7 +38,7 @@ $Params = @{
     variableType = 'string'
     variableValue = '"DOMAIN.LOCAL"'
     configurationName = 'dscDomainJoin'
-    configurationURI = 'https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/dscDomainJoin.ps1'
+    configurationURI = 'https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/dscDomainJoin.ps1'
     configurationDescription = 'Configuration for Domain Join with credentials support through ConfigurationData'
     jobId = $JobGUID
     jobConfigurationData = ($ConfigurationData | ConvertTo-Json -Compress).ToString()
@@ -46,7 +46,7 @@ $Params = @{
 }
 
 
-$TemplateURI = "https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/azuredeploy.json"
+$TemplateURI = "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/azuredeploy.json"
 
 New-AzureResourceGroupDeployment -TemplateParameterObject $Params -ResourceGroupName "resourcgroup01" -TemplateUri $TemplateURI
 

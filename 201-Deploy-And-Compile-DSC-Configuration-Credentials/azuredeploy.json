@@ -74,7 +74,7 @@
     },
     "configurationURI": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/dscDomainJoin.ps1",
+      "defaultValue": "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/dscDomainJoin.ps1",
 
       "metadata": {
         "description": "The URI for the DSC configuration "
@@ -106,11 +106,11 @@
     "dscModules": {
       "xComputerManagement": {
         "moduleName": "xComputerManagement",
-        "moduleUri": "https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/Modules/xComputerManagement.zip"
+        "moduleUri": "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/Modules/xComputerManagement.zip"
       },
       "xActiveDirectory": {
         "moduleName": "xActiveDirectory",
-        "moduleUri": "https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/Modules/xActiveDirectory.zip"
+        "moduleUri": "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/Modules/xActiveDirectory.zip"
 
       }
     }
