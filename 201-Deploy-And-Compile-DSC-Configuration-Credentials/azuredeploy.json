@@ -1,0 +1,213 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "defaultValue": "MyAutomationAccount",
+      "metadata": {
+        "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
+      }
+    },
+    "regionId": {
+      "type": "string",
+      "defaultValue": "East US 2",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region the Automation account is located in."
+      }
+    },
+    "credentialName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the credential to deploy."
+      }
+    },
+    "userName": {
+      "type": "string",
+      "metadata": {
+        "description": "The username for the Azure Automation credential."
+      }
+    },
+    "password": {
+      "type": "secureString",
+      "metadata": {
+        "description": "The password for the Azure Automation credential."
+      }
+    },
+    "variableName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the variable"
+      }
+    },
+    "variableType": {
+      "type": "string",
+      "allowedValues": [
+        "string",
+        "integer",
+        "dateTime",
+        "boolean"
+      ],
+      "metadata": {
+        "description": "The variable type."
+      }
+    },
+    "variableValue": {
+      "type": "string",
+      "metadata": {
+        "description": "The value for the variable.  Make sure the value for the variable matches the type selected."
+      }
+    },
+    "configurationName": {
+      "type": "string",
+      "defaultValue": "domainJoin",
+      "metadata": {
+        "description": "The name of the DSC Configuration. The name must match the name in the URI."
+      }
+    },
+    "configurationURI": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/dscDomainJoin.ps1",
+
+      "metadata": {
+        "description": "The URI for the DSC configuration "
+      }
+    },
+    "configurationDescription": {
+      "type": "string",
+      "defaultValue": "test",
+      "metadata": {
+        "description": "The description of the configuration."
+      }
+    },
+    "jobId": {
+      "type": "string",
+      "metadata": {
+        "description": "the job id to compile the configuration"
+      }
+    }
+  },
+  "variables": {
+    "pricingTier": "Free",
+    "dscOverwrite": "true",
+    "dscModules": {
+      "xComputer": {
+        "moduleName": "xComputer",
+        "moduleUri": "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/Modules/xComputer.zip"
+      },
+      "xActiveDirectory": {
+        "moduleName": "xActiveDirectory",
+        "moduleUri": "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/Modules/xActiveDirectory.zip"
+      }
+    }
+  },
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [ ],
+      "tags": { },
+      "properties": {
+        "sku": {
+          "name": "[variables('pricingTier')]"
+        }
+      },
+      "resources": [
+        {
+          "name": "[concat(parameters('accountName'), '/', parameters('credentialName'))]",
+          "type": "Credentials",
+          "apiVersion": "2015-01-01-preview",
+          "tags": { },
+          "properties": {
+            "userName": "[parameters('userName')]",
+            "password": "[parameters('password')]"
+          }
+        },
+        {
+          "name": "[concat(parameters('accountName'), '/', parameters('variableName')) ]",
+          "type": "Variables",
+          "apiVersion": "2015-01-01-preview",
+          "tags": { },
+          "properties": {
+            "description": "",
+            "isEncrypted": 0,
+            "type": "[parameters('variableType')]",
+            "value": "[parameters('variableValue')]"
+          }
+        },
+        {
+          "name": "[concat(parameters('accountName'), '/', variables('dscModules').xComputer.ModuleName)]",
+          "type": "Modules",
+          "apiVersion": "2015-01-01-preview",
+          "tags": { },
+          "properties": {
+            "contentLink": {
+              "uri": "[ variables('dscModules').xComputer.ModuleUri]"
+            }
+          }
+        },
+        {
+          "name": "[concat(parameters('accountName'), '/', variables('dscModules').xActiveDirectory.ModuleName)]",
+          "type": "Modules",
+          "apiVersion": "2015-01-01-preview",
+          "tags": { },
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('dscModules').xActiveDirectory.ModuleUri]"
+            }
+          }
+        },
+        {
+          "name": "[parameters('configurationName')]",
+          "type": "Configurations",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "tags": { },
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "properties": {
+            "logVerbose": "false",
+            "description": "[parameters('configurationDescription')]",
+            "state": "Published",
+            "overwrite": "[variables('dscOverwrite')]",
+            "Source": {
+              "type": "uri",
+              "Value": "[parameters('configurationURI')]"
+            }
+          }
+        },
+        {
+          "name": "[parameters('jobId')]",
+          "type": "Compilationjobs",
+          "apiVersion": "2015-01-01-preview",
+          "location": "parameters('regionId')]",
+          "tags": { },
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Credentials/',parameters('credentialName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Variables/',parameters('variableName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Modules/',variables('dscModules').xComputer.ModuleName))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Modules/',variables('dscModules').xActiveDirectory.ModuleName))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Configurations/', parameters('configurationName'))]"
+          ],
+          "properties": {
+            "configuration": {
+              "name": "[parameters('configurationName')]"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": { }
+}
