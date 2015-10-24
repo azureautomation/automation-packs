@@ -8,6 +8,32 @@ Add-AzureAccount
 #Create a GUID for the job
 $JobGUID = [System.Guid]::NewGuid().toString()
 
+#DSC ConfigurationData
+$ConfigurationData = @{
+    AllNodes = @(
+        @{
+            NodeName = "*";
+            PSDscAllowPlainTextPassword = "true"
+         },
+        @{
+            NodeName = "SRV001" 
+         },
+        @{
+            NodeName = "SRV002" 
+         }
+   )
+}
+
+
+#"{\"AllNodes\":[{\"NodeName\":\"*\",\"PSDscAllowPlainTextPassword\":true},{\"NodeName\":\"FS002\"}]}"
+#{"AllNodes":[{"NodeName":"*","PSDscAllowPlainTextPassword":true},{"NodeName":"FS002"}]} 
+#{\"AllNodes\":[{\"NodeName\":\"*\",\"PSDscAllowPlainTextPassword\":\"true\"},{\"NodeName\":\"SRV001\"},{\"NodeName\":\"SRV002\"}]}
+
+
+#$EscapedConfigurationData = "`"" + ($ConfigurationData | ConvertTo-Json -Compress).replace("`"", "`\`"") + "`""
+$EscapedConfigurationData = ($ConfigurationData | ConvertTo-Json -Compress).replace("`"", "`\`"")
+
+
 #Use Azure resource Manager to deploy template 
 Switch-AzureMode -Name AzureResourceManager
 
@@ -15,13 +41,22 @@ Switch-AzureMode -Name AzureResourceManager
 $Params = @{
     'accountName' = 'MyAutomationAccount'
 	'regionId' = 'East US 2'
-    'configurationName' = 'webrolefull'
-    'configurationURI' = 'https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-deploy-and-compile-DSC-configuration/Configurations/webrolefull.ps1'
-    'configurationDescription' = 'This webserver configuration contains all elements to install a full blown webserver'
+    'credentialName' = 'domainCreds'
+    'userName' = '"DOMAIN\Account"'
+    'password' = 'secret'
+    'variableName' = 'domainName'
+    'variableType' = 'string'
+    'variableValue' = '"DOMAIN.LOCAL"'
+    'configurationName' = 'dscDomainJoin'
+    'configurationURI' = 'https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/dscDomainJoin.ps1'
+    'configurationDescription' = 'Configuration for Domain Join with credentials support through ConfigurationData'
     'jobId' = $JobGUID
+    'jobConfigurationData' = $EscapedConfigurationData
 	
 }
 
-$TemplateURI = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration/azuredeploy.json"
+$TemplateFile = 'C:\Users\admbada\Source\Repos\azure\201-Deploy-And-Compile-DSC-Configuration-Credentials\azuredeploy.json'
+$TemplateURI = "https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/azuredeploy.json"
 
-New-AzureResourceGroupDeployment -TemplateParameterObject $Params -ResourceGroupName "MyResourceGroup" -TemplateUri $TemplateURI
+#New-AzureResourceGroupDeployment -TemplateParameterObject $Params -ResourceGroupName "resourcgroup01" -TemplateUri $TemplateURI
+New-AzureResourceGroupDeployment -TemplateParameterObject $Params -ResourceGroupName "resourcgroup01" -TemplateFile $TemplateFile
