@@ -1,8 +1,8 @@
 # Copy a DSC Configuration to Azure Automation and compile
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fazureautomation%2fautomation-packs%2fmaster%2f201-Deploy-And-Compile-DSC-Configuration%2fazuredeploy.json)
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fbdanse%2fautomation-packs%2fmaster%2f201-Deploy-And-Compile-DSC-Configuration-Credentials%2fazuredeploy.json)
 
-This DSC configuration installs a full blown webserver.
-The configuration file gets imported and compiled. 
+This DSC configuration compiles a node configuration to join a ADDS domain. 
+
 Once the DSC configuration is published and compiled it can be consumed by any registered DSC node.
 
 #Requirements
@@ -20,52 +20,67 @@ $JobGUID = (New-Guid).Guid
 #Known limitations
 - I had an issue using a DSC Configuration link containing spaces
 - Configurations can only be deployed as 'Published' during the preview
+- Quotation marks around userName from credential asset
+- Quotation marks around variableValue from variable asset
 
 #Resources deployed
 
 - Automation account
-- DSC Configuration: webrolefull, with a node named 'Full'    
-	reference the DSc configuration as webrolefull.Full
+- Variable asset "domainName"
+- Credential asset "domainCreds"
+- Assets are used during compilation
 
 ``` PowerShell
-Configuration webrolefull {
+    $domainName = Get-AutomationVariable -Name 'domainName'
+    $domainCreds = Get-AutomationPSCredential -Name 'domainCreds'
+```
+- Upload module xComputerManagement
+- Upload module xActiveDirectory
+- DSC Configuration: dscDomainJoin, configure with a nodename per node. Since computername is used. 
+	reference the DSc configuration as dscDomainJoin.SRV001, dscDomainJoin.SRV002, etc. 
 
-    $features = @(
-        @{Name = "Web-Server"; Ensure = "Present"},
-        @{Name = "Web-WebServer"; Ensure = "Present"},
-        @{Name = "Web-Common-http"; Ensure = "Present"},
-        @{Name = "Web-Default-Doc"; Ensure = "Present"},
-        @{Name = "Web-Dir-Browsing"; Ensure = "Present"},
-        @{Name = "Web-Http-Errors"; Ensure = "Present"},
-        @{Name = "Web-Static-Content"; Ensure = "Present"},
-        @{Name = "Web-Health"; Ensure = "Present"},
-        @{Name = "Web-Http-Logging"; Ensure = "Present"},
-        @{Name = "Web-Performance"; Ensure = "Present"},
-        @{Name = "Web-Stat-Compression"; Ensure = "Present"},
-        @{Name = "Web-Dyn-Compression"; Ensure = "Present"},
-        @{Name = "Web-Security"; Ensure = "Present"},
-        @{Name = "Web-Filtering"; Ensure = "Present"},
-        @{Name = "Web-Basic-Auth"; Ensure = "Present"},
-        @{Name = "Web-Windows-Auth"; Ensure = "Present"},
-        @{Name = "Web-App-Dev"; Ensure = "Present"},
-        @{Name = "Web-Net-Ext45"; Ensure = "Present"},
-        @{Name = "Web-Asp-Net45"; Ensure = "Present"},
-        @{Name = "Web-ISAPI-Ext"; Ensure = "Present"},
-        @{Name = "Web-ISAPI-Filter"; Ensure = "Present"},
-        @{Name = "Web-Ftp-Server"; Ensure = "Present"},
-        @{Name = "Web-Mgmt-Tools"; Ensure = "Present"},
-        @{Name = "Web-Mgmt-Console"; Ensure = "Present"}     
-       )
 
-    node full {
+``` PowerShell
+Configuration dscDomainJoin
+{
+    param(
+        [Int]$RetryCount = 20,
+        [Int]$RetryIntervalSec = 30
+    )
     
-        foreach ($feature in $features){
-            WindowsFeature ($feature.Name) {
-                Name = $feature.Name
-                Ensure = $feature.Ensure
-            }
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName xComputerManagement    
+    Import-DscResource -ModuleName xActiveDirectory
+
+    $domainName = Get-AutomationVariable -Name 'domainName'
+    $domainCreds = Get-AutomationPSCredential -Name 'domainCreds'
+
+    Node $AllNodes.NodeName
+    {
+        WindowsFeature ADPowershell
+        {
+            Name = "RSAT-AD-PowerShell"
+            Ensure = "Present"
+        } 
+
+        xWaitForADDomain WaitForDomain 
+        { 
+            DomainName = $somainName 
+            DomainUserCredential= $domainCreds
+            RetryCount = $RetryCount 
+            RetryIntervalSec = $RetryIntervalSec
+            DependsOn = "[WindowsFeature]ADPowershell" 
+        }
+
+        xComputer DomainJoin
+        {
+            Name = $Node.NodeName
+            DomainName = $domainName
+            Credential = $domainCreds
+            DependsOn = "[xWaitForADDomain]WaitForDomain" 
         }
     }
 }
+
 
 ```
