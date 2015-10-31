@@ -1,0 +1,43 @@
+{
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "regionId": {
+    "value": "East US 2"
+  },
+  "credentialName": {
+    "value": "domainCreds"
+
+  },
+  "userName": {
+    "value": "\"DOMAIN\\Account\""
+  },
+  "password": {
+    "value": "secret"
+  },
+  "variableName": {
+    "value": "domainName"
+
+  },
+  "variableType": {
+    "value": "string"
+  },
+  "variableValue": {
+    "value": "\"DOMAIN.LOCAL\""
+  },
+  "configurationName": {
+    "value": "dscDomainJoin"
+  },
+  "configurationURI": {
+    "value": "https://raw.githubusercontent.com/bdanse/azure/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/dscDomainJoin.ps1"
+  },
+  "configurationDescription": {
+    "value": "Configuration for Domain Join with credentials support through ConfigurationData"
+  },
+  "jobId": {
+    "value": "d1770d07-3105-45bd-a43e-4dd4a00d9b5e"
+  },
+  "jobConfigurationData": {
+    "type": "{\"AllNodes\":[{\"NodeName\":\"*\",\"PSDscAllowPlainTextPassword\":true},{\"NodeName\":\"SRV001\"},{\"NodeName\":\"SRV002\"}]}"
+  }
+} 
