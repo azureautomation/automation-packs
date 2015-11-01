@@ -8,9 +8,6 @@
     "regionId": {
         "value": "East US 2"
     },
-    "credentialName": {
-        "value": "DefaultAzureCredential"
-    },
     "userName": {
         "value": "MyAzureADUser"
     },

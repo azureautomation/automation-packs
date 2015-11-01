@@ -21,27 +21,10 @@
                 "description": "The region to deploy the Automation account in."
             }
         },
-        "pricingTier": {
-            "type": "string",
-            "allowedValues": [
-                "Free",
-                "Basic"
-            ],
-            "metadata": {
-                "description": "The pricing tier for the account."
-            }
-        },
-        "credentialName": {
-            "type": "string",
-            "defaultValue": "DefaultAzureCredential",
-            "metadata": {
-                "description": "DefaultAzureCredential is the name of the Automation credential used in this runbook. This credential allows you to authenticate to Azure. "
-            }
-        },
         "userName": {
             "type": "string",
             "metadata": {
-                "description": "The username for the Azure Automation credential."
+                "description": "The username for the Azure Automation credential used to authenticate to Azure."
             }
         },
         "password": {
@@ -52,9 +35,12 @@
         }
     },
     "variables": {
+        "pricingTier":  "Free",
         "runbookName": "Connect-AzureVM",
         "scriptUri": "https://gallery.technet.microsoft.com/scriptcenter/Connect-to-an-Azure-85f0782c/file/131573/1/Connect-AzureVM.ps1",
-        "runbookDescription": "Sets up a connection to an Azure Virtual Machine"
+        "runbookDescription": "Sets up a connection to an Azure Virtual Machine",
+        "credentialName":  "DefaultAzureCredential"
+
     },
     "resources": [
         {
@@ -66,7 +52,7 @@
             "tags": { },
             "properties": {
                 "sku": {
-                    "name": "[parameters('pricingTier')]"
+                    "name": "[variables('pricingTier')]"
                 }
             },
             "resources": [
@@ -79,7 +65,6 @@
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
                     ],
                     "tags": {
-                        "GitHubProject": "https://github.com/azureautomation/automation-packs/tree/master/200-connect-azure-vm"
                     },
                     "properties": {
                         "runbookType": "Script",
@@ -95,7 +80,7 @@
                     }
                 },
                 {
-                    "name": "[parameters('credentialName')]",
+                    "name": "[variables('credentialName')]",
                     "type": "credentials",
                     "apiVersion": "2015-01-01-preview",
                     "location": "[parameters('regionId')]",

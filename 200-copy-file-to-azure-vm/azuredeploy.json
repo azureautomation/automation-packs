@@ -21,27 +21,10 @@
                 "description": "The region to deploy the Automation account in."
             }
         },
-        "pricingTier": {
-            "type": "string",
-            "allowedValues": [
-                "Free",
-                "Basic"
-            ],
-            "metadata": {
-                "description": "The pricing tier for the account."
-            }
-        },
-        "credentialName": {
-            "type": "string",
-            "defaultValue": "DefaultAzureCredential",
-            "metadata": {
-                "description": "The credential allows you to authenticate to Azure. "
-            }
-        },
         "userName": {
             "type": "string",
             "metadata": {
-                "description": "The username for the Azure Automation credential."
+                "description": "The username for the Azure Automation credential used to authenticate to Azure."
             }
         },
         "password": {
@@ -53,14 +36,14 @@
 
     },
     "variables": {
+        "pricingTier": "Free",
         "runbookName": "Copy-ItemToAzureVM",
         "runbookURI": "https://gallery.technet.microsoft.com/scriptcenter/Copy-a-File-to-an-Azure-VM-d2ad9e1f/file/115859/2/Copy-ItemToAzureVM.ps1",
         "runbookDescription": "his Azure Automation runbook copies a file from the local runbook host to an Azure virtual machine. This runbook is intended to run after a file is copied to the local host so ensure that you have copied the file to the runbook host before calling this.",
         "childRunbookName": "Connect-AzureVM",
         "childDescription": "This runbook sets up a connection to an Azure virtual machine. It sets up a connection to the Azure subscription and then imports the certificate used for the Azure VM so remote PowerShell calls can be made to it.",
-        "childRunbookURI": "https://gallery.technet.microsoft.com/scriptcenter/Connect-to-an-Azure-85f0782c/file/131573/1/Connect-AzureVM.ps1"
-
-
+        "childRunbookURI": "https://gallery.technet.microsoft.com/scriptcenter/Connect-to-an-Azure-85f0782c/file/131573/1/Connect-AzureVM.ps1",
+        "credentialName":  "DefaultAzureCredential"
     },
     "resources": [
         {
@@ -72,7 +55,7 @@
             "tags": { },
             "properties": {
                 "sku": {
-                    "name": "[parameters('pricingTier')]"
+                    "name": "[variables('pricingTier')]"
                 }
             },
 
@@ -125,7 +108,7 @@
                     }
                 },
                 {
-                    "name": "[parameters('credentialName')]",
+                    "name": "[variables('credentialName')]",
                     "type": "credentials",
                     "apiVersion": "2015-01-01-preview",
                     "location": "[parameters('regionId')]",

@@ -21,12 +21,6 @@
                 "description": "The region to deploy the Automation account in."
             }
         },
-        "credentialName": {
-            "type": "string",
-            "metadata": {
-                "description": "DefaultAzureCredential is the name of the Automation credential used in this runbook. This credential allows you to authenticate to Azure. "
-            }
-        },
         "userName": {
             "type": "string",
             "metadata": {
@@ -34,7 +28,7 @@
             }
         },
         "password": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "The password for the Azure Automation credential."
             }
@@ -47,9 +41,10 @@
         }
     },
     "variables": {
-        "runbookName": "PublishedRunbook",
-        "scriptUri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-sample-deploy-automation-resources/sample-deploy-runbooks/runbooks/PublishedRunbook.ps1",
+        "runbookName": "Get-AzureVMTutorial",
+        "scriptUri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-get-vm-tutorial/Runbooks/Get-AzureVMTutorial.ps1",
         "runbookDescription": "Authenticates to Azure and lists all the Azure V1 VMs",
+        "credentialName": "DefaultAzureCredential",
         "sku": "Free"
     },
     "resources": [
@@ -87,7 +82,7 @@
                     }
                 },
                 {
-                    "name": "[parameters('credentialName')]",
+                    "name": "[variables('credentialName')]",
                     "type": "credentials",
                     "apiVersion": "2015-01-01-preview",
                     "location": "[parameters('regionId')]",

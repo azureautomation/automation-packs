@@ -21,23 +21,6 @@
                 "description": "The region to deploy the Automation account in."
             }
         },
-        "pricingTier": {
-            "type": "string",
-            "allowedValues": [
-                "Free",
-                "Basic"
-            ],
-            "metadata": {
-                "description": "The pricing tier for the account."
-            }
-        },
-        "credentialName": {
-            "type": "string",
-            "defaultValue": "AzureCredential",
-            "metadata": {
-                "description": "DefaultAzureCredential is the name of the Automation credential used in this runbook. This credential allows you to authenticate to Azure. "
-            }
-        },
         "userName": {
             "type": "string",
             "metadata": {
@@ -50,140 +33,93 @@
                 "description": "The password for the Azure Automation credential."
             }
         },
-        "variableName": {
+        "subscriptionIdValue": {
             "type": "string",
-            "defaultValue": "AzureSubscriptionId",
             "metadata": {
-                "description": "The name for the variable that will store your subscriptionID."
-            }
-        },
-        "variableValue": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Your subscription ID.  While not stored in an encrypted asset.  This is created using a secure string."
+                "description": "Your Azure subscription ID."
             }
         }
-
-
     },
     "variables": {
-        "runbookTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployDraftRunbook.json",
+        "pricingTier": "Free",
+
         "runbookName": "StopAzureClassicVM",
         "runbookUri": "https://gallery.technet.microsoft.com/scriptcenter/Stop-Azure-Classic-VM-397819bd/file/141790/1/StopAzureClassicVM.graphrunbook",
         "runbookType": "Graph",
         "runbookDescription": "This is an Azure Automation graph runbook that gets all of your Azure VMs or just the VMs in a service and then stops the ones that are started. You can only import and use this runbook in the Preview Azure portal.",
+        
+        "credentialName": "AzureCredential",
+        
+        "variableName": "AzureSubscriptionId",
+        "variableType": "string"
 
-        "credentialTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-credential/deployCredential.json",
-
-        "variableTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-variable/deployVariable.json",
-        "variableType":  "string"
-    
     },
-    "resources": [
+     "resources": [
         {
             "name": "[parameters('accountName')]",
             "type": "Microsoft.Automation/automationAccounts",
             "apiVersion": "2015-01-01-preview",
             "location": "[parameters('regionId')]",
-            "dependsOn": [],
-            "tags": {},
+            "dependsOn": [ ],
+            "tags": { },
             "properties": {
                 "sku": {
-                    "name": "[parameters('pricingTier')]"
+                    "name": "[variables('pricingTier')]"
                 }
             },
             "resources": [
                 {
-                    "apiVersion": "2015-01-01",
-                    "name": "nestedTemplateRunbook",
-                    "type": "Microsoft.Resources/deployments",
+                    "name": "[variables('runbookName')]",
+                    "type": "runbooks",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
                     ],
+                    "tags": {
+                    },
                     "properties": {
-                        "mode": "incremental",
-                        "templateLink": {
-                            "uri": "[variables('runbookTemplate')]",
-                            "contentVersion": "1.0"
-                        },
-                        "parameters": {
-                            "accountName": {
-                                "value": "[parameters('accountName')]"
-                            },
-                            "regionId": {
-                                "value": "[parameters('regionId')]"
-                            },
-                            "runbookName": {
-                                "value": "[variables('runbookName')]"
-                            },
-                            "runbookUri": {
-                                "value": "[variables('runbookUri')]"
-                            },
-                            "runbookType": {
-                                "value": "[variables('runbookType')]"
-                            },
-                            "runbookDescription": {
-                                "value": "[variables('runbookDescription')]"
+                        "runbookType": "[variables('runbookType')]",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[variables('runbookDescription')]",
+                        "draft": {
+                            "draftContentLink": {
+                                "uri": "[variables('runbookUri')]",
+                                "version": "1.0.0.0"
                             }
                         }
                     }
                 },
                 {
-                    "apiVersion": "2015-01-01",
-                    "name": "nestedTemplateCredential",
-                    "type": "Microsoft.Resources/deployments",
+                    "name": "[variables('credentialName')]",
+                    "type": "credentials",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
                     ],
+                    "tags": { },
                     "properties": {
-                        "mode": "incremental",
-                        "templateLink": {
-                            "uri": "[variables('credentialTemplate')]",
-                            "contentVersion": "1.0"
-                        },
-                        "parameters": {
-                            "accountName": {
-                                "value": "[parameters('accountName')]"
-                            },
-                            "credentialName": {
-                                "value": "[parameters('credentialName')]"
-                            },
-                            "userName": {
-                                "value": "[parameters('userName')]"
-                            },
-                            "password": {
-                                "value": "[parameters('password')]"
-                            }
-                        }
+                        "userName": "[parameters('userName')]",
+                        "password": "[parameters('password')]"
                     }
                 },
                 {
-                    "apiVersion": "2015-01-01",
-                    "name": "nestedTemplatevariable",
-                    "type": "Microsoft.Resources/deployments",
+                    "name": "[variables('variableName')]",
+                    "type": "variables",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
                     ],
+                    "tags": {
+                    },
                     "properties": {
-                        "mode": "incremental",
-                        "templateLink": {
-                            "uri": "[variables('variableTemplate')]",
-                            "contentVersion": "1.0"
-                        },
-                        "parameters": {
-                            "accountName": {
-                                "value": "[parameters('accountName')]"
-                            },
-                            "variableName": {
-                                "value": "[parameters('variableName')]"
-                            },
-                            "variableType": {
-                                "value": "[variables('variableType')]"
-                            },
-                            "variableValue": {
-                                "value": "[parameters('variableValue')]"
-                            }
-                        }
+                        "description": "Subscription ID for the Azure account to manage.",
+                        "isEncrypted": 0,
+                        "type": "[variables('variableType')]",
+                        "value": "[concat('\"',parameters('subscriptionIdValue'),'\"')]"
                     }
                 }
             ]

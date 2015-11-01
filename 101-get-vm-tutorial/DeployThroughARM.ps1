@@ -1,27 +1,20 @@
 ﻿
 #Connect to your Azure account
-Add-AzureAccount
+Add-AzureRmAccount 
 
 #Select your subscription if you have more than one
-#Select-AzureSubscription -SubscriptionName "My Subscription Name"
+#Select-AzureRmSubscription -SubscriptionId "Your subcription ID here"
 
 #Create a GUID for the job
 $JobGUID = [System.Guid]::NewGuid().toString()
 
-#Use Azure resource Manager to deploy template 
-Switch-AzureMode -Name AzureResourceManager
-
 #Set the parameter values for the template
 $Params = @{
-    "accountName" = "MyAccount" ;
-    "jobId" = $JobGUID;
+    "accountName" = "MyAccount2" ;
     "regionId" = "Japan East";
-    "credentialName" = "DefaultAzureCredential";
-	"userName" = "MyUserName"; 
-	"password" = "MyPassword"
+	"userName" = "Your UserName"; 
+	"password" = "Your password";
 }
 
-$TemplateURI = "https://raw.githubusercontent.com/azureautomation/resources/master/automation-packs/101-get-vm-tutorial/deployAutomationResources.json"
-
-New-AzureResourceGroupDeployment -TemplateParameterObject $Params -ResourceGroupName "MyResourceGroup" -TemplateUri $TemplateURI
-
+$TemplateURI = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-get-vm-tutorial/azuredeploy.json"
+New-AzureRMResourceGroupDeployment -TemplateParameterObject $Params -ResourceGroupName "bethgroup1" -TemplateUri $TemplateURI
