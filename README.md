@@ -21,13 +21,18 @@ Automation Packs include an Azure Resource Manager template that deploys Automat
 	5.	What resources are deployed
 	6.	Includes the "Deploy to Azure" link
 	7.	Any known limitations
+	
 4. Any Automation assets used in your runbooks or DSC configurations should be included in the deployment template.    
-5. Any runbooks, modules, or DSC Configurations in your ARM template should use the following conventions: 
+5. Any runbooks, modules, or DSC Configurations in your ARM template should use the following conventions:
+6. 
 		1. A **variable** containing the **URL** for the resource content
 		2. A **variable** containing the **Name** of the resource
+		
 5. Any Automation assets in your template should follow the the following conventions:
+6. 
 		1. **Parameter(s)** for the asset value(s) are in the deployment template to allow end users input their own values
 		2.  A **variable** for each asset name 	
+		
 5. Template parameters should: 
 	1. Follow **camelCasing**
 	2. Contain **allowedValues** where ever makes sense
@@ -41,6 +46,7 @@ Automation Packs include an Azure Resource Manager template that deploys Automat
         }
   }
   ```
+  
 ##Recommendations for writing your Automation Pack 
 ### Runbooks in Automation Packs
 You can store runbooks referenced in Automation Packs in two different ways:
