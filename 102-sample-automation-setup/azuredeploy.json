@@ -1,0 +1,217 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "defaultValue": "MyAutomationAccount",
+            "metadata": {
+                "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account, or they will be changed."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "defaultValue": "South Central US",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US"
+            ],
+            "metadata": {
+                "description": "The region the Automation account is located in."
+            }
+        },
+        "dscCompilationJobId": {
+            "type": "string",
+            "defaultValue": "38514b6d-98aa-47f7-b3b7-26cb3a3310c4",
+            "metadata": {
+                "description": "The job id, as a GUID, to compile the configuration"
+            }
+        },
+        "runbookJobId": {
+            "type": "string",
+            "defaultValue": "8cf59290-90d8-4db8-84a5-4aad12b73ebc",
+            "metadata": {
+                "description": "The job id, as a GUID, to run the runbook"
+            }
+        },
+        "jobScheduleId": {
+            "type": "string",
+            "defaultValue": "8a0a4933-e0f9-46bd-9f7a-5f30b02e79dd",
+            "metadata": {
+                "description": "The job schedule id, as a GUID, to hook the schedule up to the runbook"
+            }
+        },
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the VM to create."
+            }
+        }
+    },
+    "variables": {
+        "pricingTier": "Free",
+        "configurationURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Configurations/SimpleConfig.ps1",
+        "configurationName": "SimpleConfig",
+        "configurationDescription": "A configuration for installing IIS",
+        "runbookURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Runbooks/SampleRunbook.ps1",
+        "runbookName": "SampleRunbook",
+        "runbookDescription": "A sample runbook",
+        "credentialName": "MyVMCredential",
+        "vmUsername": "testuser",
+        "vmPassword": "P2ssw0rd!",
+        "vmPort": "5986",
+        "vmUseSSL": "true",
+        "scheduleName": "DailyAt6PM",
+        "scheduleStartTime": "12/30/2020 18:00:00"
+    },
+    "resources": [
+        {
+            "name": "[parameters('accountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('regionId')]",
+            "dependsOn": [],
+            "tags": {},
+            "properties": {
+                "sku": {
+                    "name": "[variables('pricingTier')]"
+                }
+            },
+            "resources": [
+                {
+                    "name": "[parameters('configurationName')]",
+                    "type": "configurations",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "tags": {},
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "logVerbose": "true",
+                        "description": "[variables('configurationDescription')]",                    
+                        "state": "Published",
+                        "overwrite": "true",
+                        "source": {
+                            "type": "uri",
+                            "value": "[variables('configurationURI')]"
+                        }
+                    }
+                },
+                {
+                    "name": "[parameters('dscCompilationJobId')]",
+                    "type": "compilationjobs",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "parameters('regionId')]",
+                    "tags": {},
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/configurations/', variables('configurationName'))]"
+                    ],
+                    "properties": {
+                        "configuration": {
+                            "name": "[variables('configurationName')]"
+                        }
+                    }
+                },
+                {
+                    "name": "[variables('runbookName')]",
+                    "type": "runbooks",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "runbookType": "PowerShell",
+                        "logProgress": "false",
+                        "logVerbose": "true",
+                        "description": "[variables('runbookDescription')]",
+                        "publishContentLink": {
+                            "uri": "[variables('runbookURI')]",
+                            "version": "1.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "name": "[variables('credentialName')]",
+                    "type": "credentials",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "userName": "[variables('vmUsername')]",
+                        "password": "[variables('vmPassword')]"
+                    }
+                },
+                {
+                    "name": "[parameters('runbookJobId')]",
+                    "type": "jobs",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('runbookName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/credentials/', variables('credentialName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "runbook": {
+                            "name": "[variables('runbookName')]"
+                        },
+                        "parameters": {
+                            "VMName": "[parameters('vmName')]",
+                            "VMPort": "[variables('vmPort')]",
+                            "VMUseSSL": "[variables('vmUseSSL')]"
+                        }
+                    }
+                },
+                {
+                    "name": "[variables('scheduleName')]",
+                    "type": "schedules",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "description": "Runs daily at 6 PM",
+                        "startTime": "[variables('scheduleStartTime')]",
+                        "isEnabled": "true",
+                        "interval": "1",
+                        "frequency": "day"
+                    }
+                },
+                {
+                    "name": "[parameters('jobScheduleId')]",
+                    "type": "jobSchedules",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('runbookName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/schedules/', variables('scheduleName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "schedule": {
+                            "name": "[variables('scheduleName')]"
+                        },
+                        "runbook": {
+                            "name": "[variables('runbookName')]"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {}
+}
