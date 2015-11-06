@@ -4,7 +4,7 @@
     [boolean] $VMUseSSL
 )
 
-$VMCredential = Get-AutomationCredential -Name "MyVMCredential"
+$VMCredential = Get-AutomationPSCredential -Name "MyVMCredential"
 
 Invoke-Command -ScriptBlock {        
     Write-Verbose ("Successfully remoted to " + $env:COMPUTERNAME)

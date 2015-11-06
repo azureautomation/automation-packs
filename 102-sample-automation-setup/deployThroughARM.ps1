@@ -15,7 +15,7 @@ New-AzureRmAutomationAccount -ResourceGroupName $ResourceGroupName -Name $Automa
 $Params = @{
     "accountName" = $AutomationAccountName
 	"regionId" = $Location
-    "vmName" = ("SampleVM" + [System.Guid]::NewGuid().toString())
+    "vmName" = ("SampleVM" + [System.Guid]::NewGuid().toString().substring(0,7))
 }
 
 $TemplateURI = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/azuredeploy.json"

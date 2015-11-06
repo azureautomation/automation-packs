@@ -207,6 +207,11 @@
                         },
                         "runbook": {
                             "name": "[variables('runbookName')]"
+                        },
+                        "parameters": {
+                            "VMName": "[parameters('vmName')]",
+                            "VMPort": "[variables('vmPort')]",
+                            "VMUseSSL": "[variables('vmUseSSL')]"
                         }
                     }
                 }
