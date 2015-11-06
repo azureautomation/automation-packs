@@ -82,7 +82,7 @@
             },
             "resources": [
                 {
-                    "name": "[parameters('configurationName')]",
+                    "name": "[variables('configurationName')]",
                     "type": "configurations",
                     "apiVersion": "2015-01-01-preview",
                     "location": "[parameters('regionId')]",
