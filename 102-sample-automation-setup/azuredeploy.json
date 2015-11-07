@@ -25,21 +25,18 @@
         },
         "dscCompilationJobId": {
             "type": "string",
-            "defaultValue": "38514b6d-98aa-47f7-b3b7-26cb3a3310c4",
             "metadata": {
                 "description": "The job id, as a GUID, to compile the configuration"
             }
         },
         "runbookJobId": {
             "type": "string",
-            "defaultValue": "8cf59290-90d8-4db8-84a5-4aad12b73ebc",
             "metadata": {
                 "description": "The job id, as a GUID, to run the runbook"
             }
         },
         "jobScheduleId": {
             "type": "string",
-            "defaultValue": "8a0a4933-e0f9-46bd-9f7a-5f30b02e79dd",
             "metadata": {
                 "description": "The job schedule id, as a GUID, to hook the schedule up to the runbook"
             }

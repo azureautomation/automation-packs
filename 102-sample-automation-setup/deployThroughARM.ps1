@@ -16,6 +16,9 @@ $Params = @{
     "accountName" = $AutomationAccountName
 	"regionId" = $Location
     "vmName" = ("SampleVM" + [System.Guid]::NewGuid().toString().substring(0,7))
+    "dscCompilationJobId" = [System.Guid]::NewGuid().toString()
+    "runbookJobId" = [System.Guid]::NewGuid().toString()
+    "jobScheduleId" = [System.Guid]::NewGuid().toString()
 }
 
 $TemplateURI = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/azuredeploy.json"
