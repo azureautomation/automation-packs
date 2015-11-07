@@ -19,12 +19,12 @@ $Params = @{
 	"regionId" = $Location
     "registrationKey" = $RegistrationInfo.PrimaryKey
     "registrationUrl" = $RegistrationInfo.Endpoint
-    "vmName" = ("SampleVM" + [System.Guid]::NewGuid().toString().Substring(0,7))
+    "vmName" = ("samplevm" + [System.Guid]::NewGuid().toString().Substring(0,7))
     "dscCompilationJobId" = [System.Guid]::NewGuid().toString()
     "runbookJobId" = [System.Guid]::NewGuid().toString()
     "jobScheduleId" = [System.Guid]::NewGuid().toString()
     "timestamp" = (Get-Date).toString()
-    "storageAccountName" = ("SampleVMStorage" + [System.Guid]::NewGuid().toString().Substring(0,9))
+    "storageAccountName" = ("SampleVMStorage" + [System.Guid]::NewGuid().toString().Replace("-","").Substring(0,9))
 }
 
 $TemplateURI = "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/azuredeploy.json"

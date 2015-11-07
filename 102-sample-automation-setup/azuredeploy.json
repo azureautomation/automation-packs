@@ -347,7 +347,7 @@
                     "imageReference": {
                         "publisher": "[variables('vmImagePublisher')]",
                         "offer": "[variables('vmImageOffer')]",
-                        "sku": "[parameters('vmOSVersion')]",
+                        "sku": "[variables('vmOSVersion')]",
                         "version": "latest"
                     },
                     "osDisk": {
