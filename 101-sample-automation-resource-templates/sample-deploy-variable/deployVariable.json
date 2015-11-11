@@ -76,7 +76,7 @@
                         "description": "Some description",
                         "isEncrypted": 0,
                         "type": "string",
-                        "value": "[parameters('variableValue')]"
+                        "value": "[concat('\"', parameters('variableValue'),'\"')]"
                     }
                 }
             ]

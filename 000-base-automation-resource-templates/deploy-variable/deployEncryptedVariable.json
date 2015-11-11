@@ -49,7 +49,7 @@
                 "description": "",
                 "isEncrypted": 1,
                 "type": "[parameters('variableType')]",
-                "value": "[parameters('variableValue')]"
+                "value": "[concat('\"', parameters('variableValue'),'\"')]"
             }
         }
     ],

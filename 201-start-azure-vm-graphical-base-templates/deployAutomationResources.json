@@ -1,0 +1,193 @@
+{
+    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation account to deploy to."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US"
+            ],
+            "metadata": {
+                "description": "The region to deploy the Automation account in."
+            }
+        },
+        "pricingTier": {
+            "type": "string",
+            "allowedValues": [
+                "Free",
+                "Basic"
+            ],
+            "metadata": {
+                "description": "The pricing tier for the account."
+            }
+        },
+        "credentialName": {
+            "type": "string",
+            "defaultValue": "AzureCredential",
+            "metadata": {
+                "description": "DefaultAzureCredential is the name of the Automation credential used in this runbook. This credential allows you to authenticate to Azure. "
+            }
+        },
+        "userName": {
+            "type": "string",
+            "metadata": {
+                "description": "The username for the Azure Automation credential."
+            }
+        },
+        "password": {
+            "type": "secureString",
+            "metadata": {
+                "description": "The password for the Azure Automation credential."
+            }
+        },
+        "variableName": {
+            "type": "string",
+            "defaultValue": "AzureSubscriptionId",
+            "metadata": {
+                "description": "The name for the variable that will store your subscriptionID."
+            }
+        },
+        "variableValue": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Your subscription ID.  While not stored in an encrypted asset.  This is created using a secure string."
+            }
+        }
+
+
+    },
+    "variables": {
+        "runbookTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-runbooks/deployDraftRunbook.json",
+        "runbookName": "StartAzureClassicVM",
+        "runbookUri": "https://gallery.technet.microsoft.com/scriptcenter/Start-Azure-Classic-VM-c6067b3d/file/141789/1/StartAzureClassicVM.graphrunbook",
+        "runbookType": "Graph",
+        "runbookDescription": "This is an Azure Automation graph runbook that gets all of your Azure VMs or just the VMs in a service and then starts the ones that are stopped. You can import and use this runbook only in the Azure Preview Portal.",
+
+        "credentialTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-credential/deployCredential.json",
+
+        "variableTemplate": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/000-base-automation-resource-templates/deploy-variable/deployVariable.json",
+        "variableType": "string"
+
+    },
+    "resources": [
+        {
+            "name": "[parameters('accountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('regionId')]",
+            "dependsOn": [],
+            "tags": {},
+            "properties": {
+                "sku": {
+                    "name": "[parameters('pricingTier')]"
+                }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplateRunbook",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('runbookTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+                            "regionId": {
+                                "value": "[parameters('regionId')]"
+                            },
+                            "runbookName": {
+                                "value": "[variables('runbookName')]"
+                            },
+                            "runbookUri": {
+                                "value": "[variables('runbookUri')]"
+                            },
+                            "runbookType": {
+                                "value": "[variables('runbookType')]"
+                            },
+                            "runbookDescription": {
+                                "value": "[variables('runbookDescription')]"
+                            }
+                        }
+                    }
+                },
+                {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplateCredential",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('credentialTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+                            "credentialName": {
+                                "value": "[parameters('credentialName')]"
+                            },
+                            "userName": {
+                                "value": "[parameters('userName')]"
+                            },
+                            "password": {
+                                "value": "[parameters('password')]"
+                            }
+                        }
+                    }
+                },
+                {
+                    "apiVersion": "2015-01-01",
+                    "name": "nestedTemplatevariable",
+                    "type": "Microsoft.Resources/deployments",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "[variables('variableTemplate')]",
+                            "contentVersion": "1.0"
+                        },
+                        "parameters": {
+                            "accountName": {
+                                "value": "[parameters('accountName')]"
+                            },
+                            "variableName": {
+                                "value": "[parameters('variableName')]"
+                            },
+                            "variableType": {
+                                "value": "[variables('variableType')]"
+                            },
+                            "variableValue": {
+                                "value": "[parameters('variableValue')]"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {}
+}
