@@ -6,7 +6,7 @@ Login-AzureRmAccount
 
 $ResourceGroupName = "SampleResourceGroup"
 $AutomationAccountName = "SampleAutomationAccount"
-$Location = "South Central US"
+$Location = "southcentralus"
 
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location
 New-AzureRmAutomationAccount -ResourceGroupName $ResourceGroupName -Name $AutomationAccountName -Location $Location -Plan Free

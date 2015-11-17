@@ -13,11 +13,11 @@
             "type": "string",
             "defaultValue": "South Central US",
             "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
+                "japaneast",
+                "eastus2",
+                "westeurope",
+                "southeastasia",
+                "southcentralus"
             ],
             "metadata": {
                 "description": "The region the Automation account is located in."
@@ -105,7 +105,8 @@
         "vmVirtualNetworkName": "MyVNET",
         "vmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vmVirtualNetworkName'))]",
         "vmSubnetRef": "[concat(variables('vmVnetID'), '/subnets/', variables('vmSubnetName'))]",
-        "vmOSVersion": "2012-R2-Datacenter"
+        "vmOSVersion": "2012-R2-Datacenter",
+        "vmFQDN": "[concat(parameters('vmName'), '.', parameters('regionId'), '.cloudapp.azure.com')]"
     },
     "resources": [
         {
@@ -207,7 +208,7 @@
                             "name": "[variables('runbookName')]"
                         },
                         "parameters": {
-                            "VMName": "[parameters('vmName')]",
+                            "VMName": "[variables('vmFQDN')]",
                             "VMPort": "[variables('vmPort')]",
                             "VMUseSSL": "[variables('vmUseSSL')]"
                         }
@@ -249,7 +250,7 @@
                             "name": "[variables('runbookName')]"
                         },
                         "parameters": {
-                            "VMName": "[parameters('vmName')]",
+                            "VMName": "[variables('vmFQDN')]",
                             "VMPort": "[variables('vmPort')]",
                             "VMUseSSL": "[variables('vmUseSSL')]"
                         }
