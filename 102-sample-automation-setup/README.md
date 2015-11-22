@@ -5,4 +5,6 @@ This sample deploys in a new resource group, an Azure VM and an automation accou
 It contains a script, deployThroughARM, that you can use to easily deploy the sample through Azure Resource Manager:
 `.\deployThroughARM.ps1`
 
+The script references the content in this GitHub repository, so all you need to download to run the script is the script itself. Download [here](https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/deployThroughARM.ps1).
+
 Note: You must have the [Azure Resource Manager cmdlets v1.0 (or later)](https://azure.microsoft.com/en-us/documentation/articles/powershell-azure-resource-manager/) installed for the script to work.
