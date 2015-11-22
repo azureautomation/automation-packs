@@ -24,7 +24,7 @@ $Params = @{
     runbookJobId = [System.Guid]::NewGuid().toString()
     jobScheduleId = [System.Guid]::NewGuid().toString()
     timestamp = (Get-Date).toString()
-    storageAccountName = ('SampleVMStorage' + [System.Guid]::NewGuid().toString().Replace('-'','').Substring(0,9))
+    storageAccountName = ('SampleVMStorage' + [System.Guid]::NewGuid().toString().Replace('-','').Substring(0,9))
 }
 
 $TemplateURI = 'https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/azuredeploy.json'
