@@ -4,8 +4,8 @@ Login-AzureRmAccount
 #Select your subscription if you have more than one
 #Select-AzureSubscription -SubscriptionName "My Subscription Name"
 
-$ResourceGroupName = "AzureAutomationDSC"
-$AutomationAccountName = "AzureAutomationDSC"
+$ResourceGroupName = "SampleAutomationResourceGroup"
+$AutomationAccountName = "SampleAutomationAccount"
 $Location = "southcentralus"
 
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location
