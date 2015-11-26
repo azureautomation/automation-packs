@@ -35,7 +35,7 @@ Automation Packs include an Azure Resource Manager template that deploys Automat
 		
 5. Template parameters should: 
 	1. Follow **camelCasing**
-	2. Contain **allowedValues** where ever makes sense
+	2. Contain **allowedValues** wherever it makes sense
 	3. Have the **description** specified using the metadata property. An example is included below:
 
   ```json
