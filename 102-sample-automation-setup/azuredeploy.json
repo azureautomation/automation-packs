@@ -41,12 +41,6 @@
                 "description": "The job schedule id, as a GUID, to hook the schedule up to the runbook"
             }
         },
-        "vmName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the VM to create. Must be unique."
-            }
-        },
         "registrationKey": {
             "type": "secureString",
             "metadata": {
@@ -64,15 +58,11 @@
             "metadata": {
                 "description": "The current datetime, as a string, to force the request to go through ARM even if all fields are the same as last ARM deployment of this template; example in parameters file is in MM/dd/yyyy H:mm:ss tt format"
             }
-        },
-        "storageAccountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the storage account to create to store VM image in. Must be unique."
-            }
         }
     },
     "variables": {
+        "vmName": "[concat('VM', uniqueString(parameters('accountName')))]",
+        "storageAccountName": "[concat('StorageFor', variables('vmName'))]",
         "pricingTier": "Free",
         "configurationURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Configurations/SimpleConfig.ps1",
         "configurationName": "SimpleConfig",
@@ -106,7 +96,7 @@
         "vmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vmVirtualNetworkName'))]",
         "vmSubnetRef": "[concat(variables('vmVnetID'), '/subnets/', variables('vmSubnetName'))]",
         "vmOSVersion": "2012-R2-Datacenter",
-        "vmFQDN": "[concat(parameters('vmName'), '.', parameters('regionId'), '.cloudapp.azure.com')]"
+        "vmFQDN": "[concat(variables('vmName'), '.', parameters('regionId'), '.cloudapp.azure.com')]"
     },
     "resources": [
         {
@@ -260,7 +250,7 @@
         },
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('storageAccountName')]",
+            "name": "[variables('storageAccountName')]",
             "apiVersion": "2015-05-01-preview",
             "location": "[parameters('regionId')]",
             "properties": {
@@ -275,7 +265,7 @@
             "properties": {
                 "publicIPAllocationMethod": "[variables('vmPublicIPAddressType')]",
                 "dnsSettings": {
-                    "domainNameLabel": "[parameters('vmName')]"
+                    "domainNameLabel": "[variables('vmName')]"
                 }
             }
         },
@@ -329,10 +319,10 @@
         {
             "apiVersion": "2015-06-15",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('vmName')]",
+            "name": "[variables('vmName')]",
             "location": "[parameters('regionId')]",
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('vmNicName'))]"
             ],
             "properties": {
@@ -340,7 +330,7 @@
                     "vmSize": "[variables('vmSize')]"
                 },
                 "osProfile": {
-                    "computername": "[parameters('vmName')]",
+                    "computername": "[variables('vmName')]",
                     "adminUsername": "[variables('vmUsername')]",
                     "adminPassword": "[variables('vmPassword')]"
                 },
@@ -354,7 +344,7 @@
                     "osDisk": {
                         "name": "osdisk",
                         "vhd": {
-                            "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('vmOSDiskName'),'.vhd')]"
+                            "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('vmOSDiskName'),'.vhd')]"
                         },
                         "caching": "ReadWrite",
                         "createOption": "FromImage"
@@ -370,21 +360,21 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net')]"
+                        "storageUri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net')]"
                     }
                 }
             }
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('vmName'),'/dscExtension')]",
+            "name": "[concat(variables('vmName'),'/dscExtension')]",
             "apiVersion": "2015-06-15",
             "location": "[parameters('regionId')]",
              "dependsOn": [
                 "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
                 "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/configurations/', variables('configurationName'))]",
                 "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/compilationjobs/', parameters('dscCompilationJobId'))]",
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
+                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
             ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
