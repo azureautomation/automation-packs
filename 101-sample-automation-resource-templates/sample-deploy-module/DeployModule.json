@@ -30,7 +30,7 @@
         },
         "moduleUri": {
             "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-sample-deploy-automation-resources/sample-deploy-module/module/Write-HelloWorldModule.zip",
+            "defaultValue": "https://github.com/azureautomation/automation-packs/raw/7c2a7c901099b384a05e17261d3c6b4192e841b4/101-sample-automation-resource-templates/sample-deploy-module/modules/Hello-WorldModule.zip",
             "metadata": {
                 "description": "The URL for the module zip file to upload to Azure Automation. To learn about authoring modules for Automation see: http://azure.microsoft.com/blog/2014/12/15/authoring-integration-modules-for-azure-automation/"
             }
