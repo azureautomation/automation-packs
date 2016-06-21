@@ -5,7 +5,7 @@ Login-AzureRmAccount
 #Select-AzureSubscription -SubscriptionName "My Subscription Name"
 
 $ResourceGroupName = "SampleAutomationResourceGroup"
-$AutomationAccountName = "SampleAutomationAccount"
+$AutomationAccountName = [System.Guid]::NewGuid().toString()
 $Location = "southcentralus"
 
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location
