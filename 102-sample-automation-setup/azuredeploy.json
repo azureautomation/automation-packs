@@ -62,7 +62,7 @@
     },
     "variables": {
         "vmName": "[concat('vm', uniqueString(parameters('accountName')))]",
-        "storageAccountName": "[concat('Storage4', variables('vmName'))]",
+        "storageAccountName": "[concat('storage4', variables('vmName'))]",
         "pricingTier": "Free",
         "configurationURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Configurations/SimpleConfig.ps1",
         "configurationName": "SimpleConfig",
