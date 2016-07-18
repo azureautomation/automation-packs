@@ -65,7 +65,7 @@ Configuration dscDomainJoin
 
         xWaitForADDomain WaitForDomain 
         { 
-            DomainName = $somainName 
+            DomainName = $domainName 
             DomainUserCredential= $domainCreds
             RetryCount = $RetryCount 
             RetryIntervalSec = $RetryIntervalSec
