@@ -1,96 +1,96 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Azure Automation account to deploy to."
-            }
-        },
-        "regionId": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region to deploy the Automation account in."
-            }
-        },
-        "userName": {
-            "type": "string",
-            "metadata": {
-                "description": "The username for the Azure Automation credential."
-            }
-        },
-        "password": {
-            "type": "securestring",
-            "metadata": {
-                "description": "The password for the Azure Automation credential."
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Automation account to deploy to."
+      }
     },
+    "password": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the Azure Automation credential."
+      }
+    },
+    "regionId": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region to deploy the Automation account in."
+      }
+    },
+    "userName": {
+      "type": "string",
+      "metadata": {
+        "description": "The username for the Azure Automation credential."
+      }
+    }
+  },
   "variables": {
     "runbookName": "Remove-ResourceGroups",
-    "scriptUri": "https://raw.githubusercontent.com/azureautomation/runbooks/master/Utility/Remove-ResourceGroups.ps1",
+    "scriptUri": "https://raw.githubusercontent.com/dtzar/runbooks/54cb11d1c6665dbe8e936dec93246dff31155627/Utility/Remove-ResourceGroups.ps1",
     "runbookDescription": "Connects to Azure and removes all resource groups which match the name filter.",
     "credentialName": "DefaultAzureCredential",
     "sku": "Free"
   },
-    "resources": [
-        {
-            "name": "[parameters('accountName')]",
-            "type": "Microsoft.Automation/automationAccounts",
-            "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [],
-            "tags": {},
-            "properties": {
-                "sku": {
-                    "name": "[variables('sku')]"
-                }
-            },
-            "resources": [
-                {
-                    "name": "[variables('runbookName')]",
-                    "type": "runbooks",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "runbookType": "Script",
-                        "logProgress": "false",
-                        "logVerbose": "false",
-                        "description": "[variables('runbookDescription')]",
-                        "publishContentLink": {
-                            "uri": "[variables('scriptUri')]",
-                            "version": "1.0.0.0"
-                        }
-                    }
-                },
-                {
-                    "name": "[variables('credentialName')]",
-                    "type": "credentials",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "userName": "[parameters('userName')]",
-                        "password": "[parameters('password')]"
-                    }
-                }
-            ]
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-10-31",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [],
+      "tags": {},
+      "properties": {
+        "sku": {
+          "name": "[variables('sku')]"
         }
-    ],
-    "outputs": {}
+      },
+      "resources": [
+        {
+          "name": "[variables('runbookName')]",
+          "type": "runbooks",
+          "apiVersion": "2015-10-31",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbookType": "Script",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "[variables('runbookDescription')]",
+            "publishContentLink": {
+              "uri": "[variables('scriptUri')]",
+              "version": "1.0.0.0"
+            }
+          }
+        },
+        {
+          "name": "[variables('credentialName')]",
+          "type": "credentials",
+          "apiVersion": "2015-10-31",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "userName": "[parameters('userName')]",
+            "password": "[parameters('password')]"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {}
 }
