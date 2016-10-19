@@ -1,138 +1,207 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
-            }
-        },
-        "location": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region to deploy the Automation account in."
-            }
-        },
-        "pricingTier": {
-            "type": "string",
-            "allowedValues": [
-                "Free",
-                "Basic"
-            ],
-            "metadata": {
-                "description": "The pricing tier for the account."
-            }
-        },
-        "blankRunbookName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name for the blank runbook."
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
+      }
     },
-    "variables": {
-        "runbookDraftName": "DraftRunbook",
-        "runbookDraftURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-sample-deploy-automation-resources/sample-deploy-runbooks/runbooks/DraftRunbook.ps1",
-        "runbookPublishedName": "PublishedRunbook",
-        "runbookPublishedURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-sample-deploy-automation-resources/sample-deploy-runbooks/runbooks/PublishedRunbook.ps1"
+    "location": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region to deploy the Automation account in."
+      }
     },
-        "resources": [
-            {
-                "name": "[parameters('accountName')]",
-                "type": "Microsoft.Automation/automationAccounts",
-                "apiVersion": "2015-01-01-preview",
-                "location": "[parameters('location')]",
-                "dependsOn": [
-                ],
-                "tags": {
-                    "key": "value"
-                },
-                "properties": {
-                    "comment": "Resource defined structure",
-                    "sku": {
-                        "name": "[parameters('pricingTier')]"
-                    }
-                },
-                "resources": [
-                    {
-                        "name": "[parameters('blankRunbookName')]",
-                        "type": "runbooks",
-                        "apiVersion": "2015-01-01-preview",
-                        "location": "[parameters('location')]",
-                        "dependsOn": [
-                            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                        ],
-                        "tags": {
-                            "key1": "value1"
-                        },
-                        "properties": {
-                            "runbookType": "Graph",
-                            "logProgress": "false",
-                            "logVerbose": "false",
-                            "description": "My empty runbook",
-                            "draft": {
-                            }
-                        }
-                    },
-                    {
-                        "name": "[variables('runbookDraftName')]",
-                        "type": "runbooks",
-                        "apiVersion": "2015-01-01-preview",
-                        "location": "[parameters('location')]",
-                        "dependsOn": [
-                            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                        ],
-                        "tags": {
-                            "key1": "value1"
-                        },
-                        "properties": {
-                            "runbookType": "Script",
-                            "logProgress": "false",
-                            "logVerbose": "false",
-                            "description": "This runbook is being created as a draft.",
-                            "draft": {
-                                "draftContentLink": {
-                                    "uri": "[variables('runbookDraftURI')]",
-                                    "version": "1.0.0.0"
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "name": "[variables('runbookPublishedName')]",
-                        "type": "runbooks",
-                        "apiVersion": "2015-01-01-preview",
-                        "location": "[parameters('location')]",
-                        "dependsOn": [
-                            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                        ],
-                        "tags": {
-                            "key": "value"
-                        },
-                        "properties": {
-                            "runbookType": "Script",
-                            "logProgress": "false",
-                            "logVerbose": "false",
-                            "description": "This runbook is being created as a published runbook.",
-                            "publishContentLink": {
-                                "uri": "[variables('runbookPublishedURI')]",
-                                "version": "1.0.0.0"
-                            }
-                        }
-                    }           
-
-                ]
-            }
-        ],
-
-        "outputs": {
-        }
+    "pricingTier": {
+      "type": "string",
+      "allowedValues": [
+        "Free",
+        "Basic"
+      ],
+      "metadata": {
+        "description": "The pricing tier for the account."
+      }
+    },
+    "blankRunbookName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name for the blank runbook."
+      }
+    },
+    "scheduleName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the schedule."
+      }
+    },
+    "frequency": {
+      "type": "string",
+      "allowedValues": [
+        "onetime",
+        "hour",
+        "day"
+      ],
+      "metadata": {
+        "description": "The frequency of the schedule."
+      }
+    },
+    "jobScheduleGuid": {
+      "type": "string",
+      "metadata": {
+        "description": "The GUID for the job schedule.  This identifier links the schedule to the runbook."
+      }
+    },
+    "StartTime": {
+      "type": "string",
+      "metadata": {
+        "description": "Start Date job schedule."
+      }
     }
+  },
+  "variables": {
+    "runbookDraftName": "DraftRunbook",
+    "runbookDraftURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-sample-automation-resource-templates/sample-deploy-runbooks/runbooks/DraftRunbook.ps1",
+    "runbookPublishedName": "PublishedRunbook",
+    "runbookPublishedURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-sample-automation-resource-templates/sample-deploy-runbooks/runbooks/PublishedRunbook.ps1"
+  },
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-10-31",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+      ],
+      "tags": {
+        "key": "value"
+      },
+      "properties": {
+        "comment": "Resource defined structure",
+        "sku": {
+          "name": "[parameters('pricingTier')]"
+        }
+      },
+      "resources": [
+        {
+          "name": "[parameters('blankRunbookName')]",
+          "type": "runbooks",
+          "apiVersion": "2015-10-31",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {
+            "key1": "value1"
+          },
+          "properties": {
+            "runbookType": "Graph",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "My empty runbook",
+            "draft": {
+            }
+          }
+        },
+        {
+          "name": "[variables('runbookDraftName')]",
+          "type": "runbooks",
+          "apiVersion": "2015-10-31",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {
+            "key1": "value1"
+          },
+          "properties": {
+            "runbookType": "Script",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "This runbook is being created as a draft.",
+            "draft": {
+              "draftContentLink": {
+                "uri": "[variables('runbookDraftURI')]",
+                "version": "1.0.0.0"
+              }
+            }
+          }
+        },
+        {
+          "name": "[variables('runbookPublishedName')]",
+          "type": "runbooks",
+          "apiVersion": "2015-10-31",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {
+            "key": "value"
+          },
+          "properties": {
+            "runbookType": "Script",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "This runbook is being created as a published runbook.",
+            "publishContentLink": {
+              "uri": "[variables('runbookPublishedURI')]",
+              "version": "1.0.0.0"
+            }
+          }
+        },
+        {
+          "name": "[parameters('scheduleName')]",
+          "type": "schedules",
+          "apiVersion": "2015-10-31",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {
+          },
+          "properties": {
+            "description": "My schedule description",
+            "startTime": "[parameters('StartTime')]",
+            "isEnabled": "true",
+            "interval": "1",
+            "frequency": "[parameters('frequency')]"
+          }
+        },
+
+        {
+          "name": "[parameters('jobScheduleGuid')]",
+          "type": "jobSchedules",
+          "apiVersion": "2015-10-31",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),  '/runbooks/', variables('runbookPublishedName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/schedules/', parameters('scheduleName'))]"
+          ],
+          "tags": {
+          },
+          "properties": {
+            "schedule": {
+              "name": "[parameters('scheduleName')]"
+            },
+            "runbook": {
+              "name": "[ variables('runbookPublishedName')]"
+            }
+          }
+        }
+
+      ] // Resources Automation Account
+    }
+  ], // Resources Main
+
+  "outputs": {
+  }
+}
