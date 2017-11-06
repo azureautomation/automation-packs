@@ -1,0 +1,311 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "AzuredeploymentName": {
+            "type": "String"
+        },
+        "subscriptionId": {
+            "type": "String"
+        },
+        "workspaceResourceGroupName": {
+            "type": "String"
+        },
+        "workspaceName": {
+            "type": "String"
+        },
+        "accountName": {
+            "type": "String"
+        },
+        "accountResourceId": {
+            "type": "String"
+        },
+        "workspaceLocation": {
+            "type": "String"
+        },
+        "accountResourceGroupName": {
+            "type": "String"
+        },
+        "accountLocation": {
+            "type": "String"
+        },
+        "workspaceSku": {
+            "type": "String"
+        },
+        "workspaceSearchVersion": {
+            "type": "String"
+        },
+        "accountSku": {
+            "type": "String"
+        },
+        "vmResourceGroupName": {
+            "type": "String"
+        },
+        "vmName": {
+            "type": "String"
+        },
+        "vmLocation": {
+            "type": "String"
+        },
+        "vmResourceId": {
+            "type": "String"
+        },
+        "vmIdentityRequired": {
+            "defaultValue": "false",
+            "type": "Bool"
+        },
+        "workspaceResourceId": {
+            "type": "String"
+        },
+        "mmaExtensionName": {
+            "defaultValue": "",
+            "type": "String"
+        },
+        "computerGroupQueryId": {
+            "type": "String"
+        },
+        "computerGroupQueryResourceName": {
+            "type": "String"
+        },
+        "computerGroupQueryCategory": {
+            "type": "String"
+        },
+        "computerGroupQueryDisplayName": {
+            "type": "String"
+        },
+        "computerGroupQueryQuery": {
+            "type": "String"
+        },
+        "computerGroupQueryFunctionAlias": {
+            "type": "String"
+        },
+        "computerGroupQueryEtag": {
+            "type": "String"
+        },
+        "scopeConfigurationId": {
+            "type": "String"
+        },
+        "scopeConfigurationResourceName": {
+            "type": "String"
+        },
+        "scopeConfigurationKind": {
+            "type": "String"
+        },
+        "scopeConfigurationInclude": {
+            "type": "Array"
+        },
+        "scopeConfigurationEtag": {
+            "type": "String"
+        },
+        "solutionType": {
+            "type": "String"
+        },
+        "scopeConfigurationName": {
+            "type": "String"
+        },
+        "dscRefreshFrequencyMins": {
+            "type": "String"
+        },
+        "dscConfigurationModeFrequencyMins": {
+            "type": "String"
+        },
+        "dscConfigurationMode": {
+            "type": "String"
+        },
+        "dscActionAfterReboot": {
+            "type": "String"
+        },
+        "dscRebootNodeifNeeded": {
+            "type": "Bool"
+        },
+        "dscAllowModuleOverride": {
+            "type": "Bool"
+        },
+        "accountAndLinkTemplateLinkUri": {
+            "type": "String"
+        },
+        "mmaTemplateLinkUri": {
+            "type": "String"
+        },
+        "solutionTemplateLinkUri": {
+            "type": "String"
+        },
+        "computerGroupQueryTemplateLinkUri": {
+            "type": "String"
+        },
+        "scopeConfigurationTemplateLinkUri": {
+            "type": "String"
+        },
+        "dscTemplateLinkUri": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "name": "[parameters('workspaceName')]",
+            "apiVersion": "2017-03-15-preview",
+            "location": "[parameters('workspaceLocation')]",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('workspaceSku')]"
+                },
+                "features": {
+                    "searchVersion": "[parameters('workspaceSearchVersion')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('AzuredeploymentName'), '.accountAndLink')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('accountResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('accountAndLinkTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": { "value": "[parameters('workspaceName')]" },
+                    "accountName": { "value": "[parameters('accountName')]" },
+                    "accountResourceId": { "value": "[parameters('accountResourceId')]" },
+                    "workspaceLocation": { "value": "[parameters('workspaceLocation')]" },
+                    "accountLocation": { "value": "[parameters('accountLocation')]" },
+                    "accountSku": { "value": "[parameters('accountSku')]" }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('AzuredeploymentName'), '.mma')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('vmResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('mmaTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vmName": { "value": "[parameters('vmName')]" },
+                    "vmLocation": { "value": "[parameters('vmLocation')]" },
+                    "vmResourceId": { "value": "[parameters('vmResourceId')]" },
+                    "vmIdentityRequired": { "value": "[parameters('vmIdentityRequired')]" },
+                    "workspaceName": { "value": "[parameters('workspaceName')]" },
+                    "workspaceId": { "value": "[reference(parameters('workspaceResourceId')).customerId]" },
+                    "workspaceResourceId": { "value": "[parameters('workspaceResourceId')]" },
+                    "mmaExtensionName": { "value": "[parameters('mmaExtensionName')]" }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('AzuredeploymentName'), '.computerGroupQuery')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('computerGroupQueryTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": { "value": "[parameters('workspaceLocation')]" },
+                    "id": { "value": "[parameters('computerGroupQueryId')]" },
+                    "resourceName": { "value": "[parameters('computerGroupQueryResourceName')]" },
+                    "category": { "value": "[parameters('computerGroupQueryCategory')]" },
+                    "displayName": { "value": "[parameters('computerGroupQueryDisplayName')]" },
+                    "query": { "value": "[parameters('computerGroupQueryQuery')]" },
+                    "functionAlias": { "value": "[parameters('computerGroupQueryFunctionAlias')]" },
+                    "etag": { "value": "[parameters('computerGroupQueryEtag')]" }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('AzuredeploymentName'), '.scopeConfiguration')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('scopeConfigurationTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": { "value": "[parameters('workspaceLocation')]" },
+                    "id": { "value": "[parameters('scopeConfigurationId')]" },
+                    "resourceName": { "value": "[parameters('scopeConfigurationResourceName')]" },
+                    "kind": { "value": "[parameters('scopeConfigurationKind')]" },
+                    "include": { "value": "[parameters('scopeConfigurationInclude')]" },
+                    "etag": { "value": "[parameters('scopeConfigurationEtag')]" }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('AzuredeploymentName'), '.computerGroupQuery')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('AzuredeploymentName'), '.solution')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('solutionTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "subscriptionId": { "value": "[parameters('subscriptionId')]" },
+                    "resourcegroupName": { "value": "[parameters('workspaceResourceGroupName')]" },
+                    "location": { "value": "[parameters('workspaceLocation')]" },
+                    "workspaceName": { "value": "[parameters('workspaceName')]" },
+                    "solutionType": { "value": "[parameters('solutionType')]" },
+                    "scopeConfigurationName": { "value": "[parameters('scopeConfigurationName')]" }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('AzuredeploymentName'), '.scopeConfiguration')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('AzuredeploymentName'), '.dsc')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('vmResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('dscTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "AccountResourceId": { "value": "[parameters('accountResourceId')]" },
+                    "RegistrationUrl": { "value": "[reference(concat(parameters('AzuredeploymentName'), '.accountAndLink')).outputs.AutomationAccountRegistrationUrl.value]" },
+                    "RefreshFrequencyMins": { "value": "[parameters('dscRefreshFrequencyMins')]" },
+                    "ConfigurationModeFrequencyMins": { "value": "[parameters('dscConfigurationModeFrequencyMins')]" },
+                    "ConfigurationMode": { "value": "[parameters('dscConfigurationMode')]" },
+                    "ActionAfterReboot": { "value": "[parameters('dscActionAfterReboot')]" },
+                    "vmName": { "value": "[parameters('vmName')]" },
+                    "vmLocation": { "value": "[parameters('vmLocation')]" },
+                    "RebootNodeifNeeded": { "value": "[parameters('dscRebootNodeifNeeded')]" },
+                    "AllowModuleOverwrite": { "value": "[parameters('dscAllowModuleOverride')]" }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('AzuredeploymentName'), '.accountAndLink')]"
+            ]
+        }
+    ]
+}
