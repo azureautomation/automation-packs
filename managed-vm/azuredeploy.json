@@ -1,0 +1,280 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "VMName": {
+        "type": "string",
+        "metadata": {
+          "description": "The name of VM"
+        }
+      },
+      "username": {
+        "type": "string",
+        "metadata": {
+          "description": "The name user to add with access to the VM."
+        }
+      },
+      "password": {
+        "type": "securestring",
+        "metadata": {
+          "description": "The password of the user"
+        }
+      },
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Automation account."
+      }
+    },
+    "workspaceName": {
+        "type": "string",
+        "metadata": {
+          "description": "The name of the workspace."
+        }
+      }
+  },
+  "resources": [
+    {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "name": "AzureAutomationHybridWorkerSolution",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/solution.json",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "workspaceName": {
+              "value": "[parameters('workspaceName')]"
+            },
+            "workspaceRegion": {
+              "value": "[resourceGroup().location]"
+            },
+            "solutionName": {
+              "value": "AzureAutomation"
+            }
+          }
+      }          
+  },
+  {
+    "type": "Microsoft.Resources/deployments",
+    "apiVersion": "2017-05-10",
+    "name": "UpdatesSolution",
+    "dependsOn": [
+      "[concat('Microsoft.Resources/deployments/', 'AzureAutomationHybridWorkerSolution')]"
+  ],
+    "properties": {
+      "mode": "Incremental",
+      "templateLink": {
+        "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/solution.json",
+        "contentVersion": "1.0.0.0"
+      },
+      "parameters": {
+        "workspaceName": {
+          "value": "[parameters('workspaceName')]"
+        },
+        "workspaceRegion": {
+          "value": "[resourceGroup().location]"
+        },       
+        "solutionName": {
+          "value": "Updates"
+        }
+      }
+  }          
+},
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2017-05-10",
+  "name": "ChangeTrackingSolution",
+  "dependsOn": [
+    "[concat('Microsoft.Resources/deployments/', 'AzureAutomationHybridWorkerSolution')]"
+],
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/solution.json",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "workspaceName": {
+        "value": "[parameters('workspaceName')]"
+      },
+      "workspaceRegion": {
+        "value": "[resourceGroup().location]"
+      },
+      "solutionName": {
+        "value": "ChangeTracking"
+      }
+    }
+}          
+},
+    { 
+        "apiVersion": "2015-01-01", 
+        "name": "ConfigurationJobGuid", 
+        "type": "Microsoft.Resources/deployments", 
+        "properties": { 
+          "mode": "Incremental", 
+          "templateLink": {
+            "uri": "https://armtemplates.azurewebsites.net/api/NewGuid?numberOfGuids=1",
+            "contentVersion": "1.0.0.0"
+          }
+        } 
+    },
+    {
+          "type": "Microsoft.Resources/deployments",
+          "apiVersion": "2017-05-10",
+          "name": "Automation",
+          "dependsOn": [
+            "[concat('Microsoft.Resources/deployments/', 'ConfigurationJobGuid')]"
+        ],
+          "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+              "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/hybridworkerwithdsc.json",
+              "contentVersion": "1.0.0.0"
+            },
+            "parameters": {
+              "accountName": {
+                "value": "[parameters('accountName')]"
+              },
+              "regionId": {
+                "value": "[resourceGroup().location]"
+              },
+            "configurationName": {
+                "value": "HybridWorkerConfig"
+            },
+            "configurationURI": {
+                "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/dsc-configurations/HybridWorkerConfig.ps1"
+            },
+            "JobId": {
+                "value": "[reference('ConfigurationJobGuid').outputs.guid0.value]" 
+            },
+            "configurationVMParameter": {
+                "value": "[parameters('VMName')]"
+            },
+            "jobConfigurationData": {
+                "value":  "{\"AllNodes\":[{\"NodeName\":  \"*\",\"PSDscAllowPlainTextPassword\":  true}]}"
+            }
+            }
+        }          
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "LinkAccountWithWorkspace",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'AzureAutomationHybridWorkerSolution')]",
+        "[concat('Microsoft.Resources/deployments/', 'Automation')]"
+    ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/linkedworkspaceaccount.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "accountName": {
+            "value": "[parameters('accountName')]"
+          },
+          "accountResourceGroupName": {
+            "value": "[resourceGroup().name]"
+          },
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+    }          
+    },
+    {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "name": "ManagedVM",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/Windows2016Server.json",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "username": {
+              "value": "[parameters('username')]"
+            },
+            "password": {
+              "value": "[parameters('password')]"
+            },
+          "vmName": {
+              "value": "[parameters('VMName')]"
+          }
+          }
+      }          
+  },
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2017-05-10",
+  "name": "MonitoringAgent",
+  "dependsOn": [
+    "[concat('Microsoft.Resources/deployments/', 'ManagedVM')]",
+    "[concat('Microsoft.Resources/deployments/', 'AzureAutomationHybridWorkerSolution')]"
+],
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/monitoringagent.json",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "workspaceName": {
+        "value": "[parameters('workspaceName')]"
+      },
+      "workspaceResourceGroupName": {
+        "value": "[resourceGroup().name]"
+      },       
+      "vmName": {
+        "value": "[parameters('VMName')]"
+      },
+      "vmResourceGroupName": {
+        "value": "[resourceGroup().name]"
+      }
+    }
+}          
+},
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2017-05-10",
+  "name": "DSCAgent",
+  "dependsOn": [
+    "[concat('Microsoft.Resources/deployments/', 'ManagedVM')]",
+    "[concat('Microsoft.Resources/deployments/', 'AzureAutomationHybridWorkerSolution')]",
+    "[concat('Microsoft.Resources/deployments/', 'Automation')]",
+    "[concat('Microsoft.Resources/deployments/', 'MonitoringAgent')]"
+],
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/dscagent.json",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "accountName": {
+        "value": "[parameters('accountName')]"
+      },
+      "accountResourceGroupName": {
+        "value": "[resourceGroup().name]"
+      },
+      "nodeConfigurationName": {
+        "value": "HybridWorkerConfig.Demo"
+      },      
+      "vmName": {
+        "value": "[parameters('VMName')]"
+      },
+      "vmRegion": {
+        "value": "[resourceGroup().location]"
+      }
+    }
+}          
+}  
+  ],
+  "outputs": {
+  }
+}    
