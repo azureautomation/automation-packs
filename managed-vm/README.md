@@ -5,7 +5,7 @@
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-This Azure Resource Manager template deploys a new Windows Server 2016 VM and configures it to be managed with Azure Automation features. These include Update management, Inventory, Change Tracking, Desired State Configuration, and a makes the VM a hybrid worker.
+This Azure Resource Manager template deploys a new Windows Server 2016 VM and configures it to be managed with Azure Automation features. These include Update management, Inventory, Change Tracking, Desired State Configuration, and makes the VM a hybrid worker.
 
 ## Azure Automation features
 
