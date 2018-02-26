@@ -48,20 +48,51 @@
             "typeHandlerVersion": "2.74",
             "autoUpgradeMinorVersion": true,
              "settings": {
-                "Properties":  {
-                    "RegistrationUrl":  "[reference(resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName')),'2015-01-01-preview').RegistrationUrl]",
-                    "NodeConfigurationName":  "[parameters('nodeConfigurationName')]",
-                    "RegistrationKey": {
+                "Properties": [
+                    {
+                      "Name": "RegistrationKey",
+                      "Value": {
                         "UserName": "PLACEHOLDER_DONOTUSE",
-                        "Password": "PrivateSettingsRef:registrationKeyPrivate" 
+                        "Password": "PrivateSettingsRef:registrationKeyPrivate"
+                      },
+                      "TypeName": "System.Management.Automation.PSCredential"
                     },
-                    "ConfigurationMode": "ApplyAndAutoCorrect",
-                    "ConfigurationModeFrequencyMins": 15,
-                    "RefreshFrequencyMins": 30,
-                    "RebootNodeIfNeeded": true,
-                    "ActionAfterReboot": "ContinueConfiguration",
-                    "AllowModuleOverwrite": true
-                }
+                    {
+                      "Name": "RegistrationUrl",
+                      "Value": "[reference(resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName')),'2015-01-01-preview').RegistrationUrl]",
+                      "TypeName": "System.String"
+                    },
+                    {
+                      "Name": "ConfigurationMode",
+                      "Value": "ApplyAndAutoCorrect",
+                      "TypeName": "System.String"
+                    },
+                    {
+                      "Name": "ConfigurationModeFrequencyMins",
+                      "Value": "15",
+                      "TypeName": "System.Int32"
+                    },
+                    {
+                      "Name": "RefreshFrequencyMins",
+                      "Value": "30",
+                      "TypeName": "System.Int32"
+                    },
+                    {
+                        "Name": "RebootNodeIfNeeded",
+                        "Value": true,
+                        "TypeName": "System.Boolean"
+                    },
+                    {
+                        "Name": "AllowModuleOverwrite",
+                        "Value": true,
+                        "TypeName": "System.Boolean"
+                    },
+                    {
+                        "Name": "ActionAfterReboot",
+                        "Value": "ContinueConfiguration",
+                        "TypeName": "System.String"
+                    }                    
+                ]
             },
             "protectedSettings": { 
                 "Items": { 
