@@ -68,6 +68,11 @@
                       "TypeName": "System.String"
                     },
                     {
+                        "Name": "NodeConfigurationName",
+                        "Value": "[parameters('nodeConfigurationName')]",
+                        "TypeName": "System.String"
+                    },
+                    {
                       "Name": "ConfigurationModeFrequencyMins",
                       "Value": "15",
                       "TypeName": "System.Int32"
