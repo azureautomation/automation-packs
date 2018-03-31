@@ -1,0 +1,66 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Automation account."
+      }
+    },
+    "vmRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "The region for the Automation account."
+      }
+    },
+    "VMResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure resource id for the VM"
+      }
+    },
+    "softwareDeploymentName": {
+        "type": "string",
+        "metadata": {
+          "description": "The name of the software update configuration"
+        }
+      }
+},
+  "resources": [
+    {
+        "name": "[concat(parameters('accountName'), '/', parameters('softwareDeploymentName'))]",
+        "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
+        "apiVersion": "2017-05-15-preview",
+        "location":"[parameters('vmRegion')]",
+            "properties": {
+              "updateConfiguration": {
+                "operatingSystem": "Windows",
+                "duration": "PT2H0M",
+                "windows": {
+                  "excludedKbNumbers": [
+                    "123456",
+                    "233421"
+                  ],
+                  "includedUpdateClassifications": "Critical,Security"
+                },
+                "azureVirtualMachines": [
+                  "[parameters('VMResourceId')]"
+                ]
+              },
+              "scheduleInfo": {
+                "frequency": "Week",
+                "startTime": "2020-10-19T12:22:57+00:00",
+                "timeZone": "America/Los_Angeles",
+                "interval": 1,
+                "expiryTime": "2021-11-09T11:22:57+00:00",
+                "advancedSchedule": {
+                  "weekDays": [
+                    "Sunday"
+                  ]
+                }
+              }
+            }
+          }         
+        ]
+    }
