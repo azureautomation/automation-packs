@@ -273,7 +273,41 @@
       }
     }
 }          
-}  
+},
+{
+  "type": "Microsoft.Resources/deployments",
+  "apiVersion": "2017-05-10",
+  "name": "ScheduleUpdateDeployment",
+  "dependsOn": [
+    "[concat('Microsoft.Resources/deployments/', 'ManagedVM')]",
+    "[concat('Microsoft.Resources/deployments/', 'AzureAutomationHybridWorkerSolution')]",
+    "[concat('Microsoft.Resources/deployments/', 'Automation')]",
+    "[concat('Microsoft.Resources/deployments/', 'MonitoringAgent')]",
+    "[concat('Microsoft.Resources/deployments/', 'UpdatesSolution')]",
+    "[concat('Microsoft.Resources/deployments/', 'DSCAgent')]"
+],
+  "properties": {
+    "mode": "Incremental",
+    "templateLink": {
+      "uri": "https://github.com/azureautomation/automation-packs/blob/master/managed-vm/linked-templates/scheduleUpdateDeployment.json",
+      "contentVersion": "1.0.0.0"
+    },
+    "parameters": {
+      "accountName": {
+        "value": "[parameters('accountName')]"
+      },
+      "vmRegion": {
+        "value": "[resourceGroup().location]"
+      },
+      "VMResourceId": {
+        "value": "[resourceId(resourceGroup().name, 'Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+      },      
+      "softwareDeploymentName": {
+        "value": "EverySunday"
+      }
+    }
+}          
+}   
   ],
   "outputs": {
   }
