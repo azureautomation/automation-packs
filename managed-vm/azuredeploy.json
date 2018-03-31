@@ -289,7 +289,7 @@
   "properties": {
     "mode": "Incremental",
     "templateLink": {
-      "uri": "https://github.com/azureautomation/automation-packs/blob/master/managed-vm/linked-templates/scheduleUpdateDeployment.json",
+      "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/scheduleUpdateDeployment.json",
       "contentVersion": "1.0.0.0"
     },
     "parameters": {

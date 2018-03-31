@@ -37,3 +37,5 @@ This template deploys everything into a single resource group. It has currently 
 [MonitoringAgent template](https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/monitoringagent.json) installs the Log Analytics extension on the VM.
 
 [DSCAgent](https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/dscagent.json) installs the PowerShell DSC extension on the VM and configures it to pull the hybrid worker DSC configuration from the automation account.
+
+[Update deployment schedule](https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/linked-templates/scheduleUpdateDeployment.json) Schedules an update deployment for every Sunday.
