@@ -109,24 +109,11 @@
     }
 }          
 },
-    { 
-        "apiVersion": "2015-01-01", 
-        "name": "ConfigurationJobGuid", 
-        "type": "Microsoft.Resources/deployments", 
-        "properties": { 
-          "mode": "Incremental", 
-          "templateLink": {
-            "uri": "https://armtemplates.azurewebsites.net/api/NewGuid?numberOfGuids=1",
-            "contentVersion": "1.0.0.0"
-          }
-        } 
-    },
     {
           "type": "Microsoft.Resources/deployments",
           "apiVersion": "2017-05-10",
           "name": "Automation",
           "dependsOn": [
-            "[concat('Microsoft.Resources/deployments/', 'ConfigurationJobGuid')]"
         ],
           "properties": {
             "mode": "Incremental",
@@ -148,7 +135,7 @@
                 "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/dsc-configurations/HybridWorkerConfig.ps1"
             },
             "JobId": {
-                "value": "[reference('ConfigurationJobGuid').outputs.guid0.value]" 
+                "value": "[guid(resourceGroup().id, deployment().name)]"
             },
             "configurationVMParameter": {
                 "value": "[parameters('VMName')]"
