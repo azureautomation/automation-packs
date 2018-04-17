@@ -57,8 +57,7 @@
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"storageAccountType": "Standard_LRS",
 		"imagePublisher": "MicrosoftWindowsServer",
-		"imageOffer": "WindowsServer",
-		"OSDiskName": "osdiskfordemo"
+		"imageOffer": "WindowsServer"
 	},
 	"resources": [
         {

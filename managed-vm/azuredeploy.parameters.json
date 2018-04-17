@@ -8,6 +8,9 @@
         "accountName": {
             "value": "AA-DemoAccount"
         },
+        "accountWorkspaceRegion": {
+            "value": "East US"
+        },
         "VMName": {
             "value": "AA-DemoVM"
         },

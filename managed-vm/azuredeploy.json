@@ -26,6 +26,23 @@
         "description": "The name of the Automation account."
       }
     },
+    "accountWorkspaceRegion": {
+      "type": "string",
+      "defaultValue": "West Europe",
+      "allowedValues": [
+        "East US",
+        "West Central US",
+        "West Europe",
+        "Southeast Asia",
+        "Australia Southeast",
+        "Canada Central",
+        "UK South",
+        "Japan East"
+      ],
+      "metadata": {
+        "description": "Specify the region for the Automation account and Log Analytics workspace"
+      }
+    },
     "workspaceName": {
         "type": "string",
         "metadata": {
@@ -49,7 +66,7 @@
               "value": "[parameters('workspaceName')]"
             },
             "workspaceRegion": {
-              "value": "[resourceGroup().location]"
+              "value": "[parameters('accountWorkspaceRegion')]"
             },
             "solutionName": {
               "value": "AzureAutomation"
@@ -75,7 +92,7 @@
           "value": "[parameters('workspaceName')]"
         },
         "workspaceRegion": {
-          "value": "[resourceGroup().location]"
+          "value": "[parameters('accountWorkspaceRegion')]"
         },       
         "solutionName": {
           "value": "Updates"
@@ -101,7 +118,7 @@
         "value": "[parameters('workspaceName')]"
       },
       "workspaceRegion": {
-        "value": "[resourceGroup().location]"
+        "value": "[parameters('accountWorkspaceRegion')]"
       },
       "solutionName": {
         "value": "ChangeTracking"
@@ -126,7 +143,7 @@
                 "value": "[parameters('accountName')]"
               },
               "regionId": {
-                "value": "[resourceGroup().location]"
+                "value": "[if(equals(parameters('accountWorkspaceRegion'), 'East US'), 'East US2', parameters('accountWorkspaceRegion'))]"
               },
             "configurationName": {
                 "value": "HybridWorkerConfig"
@@ -135,7 +152,7 @@
                 "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/managed-vm/dsc-configurations/HybridWorkerConfig.ps1"
             },
             "JobId": {
-                "value": "[guid(resourceGroup().id, deployment().name)]"
+                "value": "[guid(resourceGroup().id, deployment().name)]" 
             },
             "configurationVMParameter": {
                 "value": "[parameters('VMName')]"
@@ -169,6 +186,9 @@
           },
           "workspaceName": {
             "value": "[parameters('workspaceName')]"
+          },
+          "workspaceRegion": {
+            "value": "[parameters('accountWorkspaceRegion')]"
           }
         }
     }          
@@ -283,8 +303,8 @@
       "accountName": {
         "value": "[parameters('accountName')]"
       },
-      "vmRegion": {
-        "value": "[resourceGroup().location]"
+      "accountRegion": {
+        "value": "[if(equals(parameters('accountWorkspaceRegion'), 'East US'), 'East US2', parameters('accountWorkspaceRegion'))]"
       },
       "VMResourceId": {
         "value": "[resourceId(resourceGroup().name, 'Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
@@ -293,8 +313,8 @@
         "value": "EverySunday"
       }
     }
-}          
-}   
+}
+}    
   ],
   "outputs": {
   }

@@ -9,7 +9,7 @@ This Azure Resource Manager template deploys a new Windows Server 2016 VM and co
 
 ## Azure Automation features
 
-This template deploys everything into a single resource group. It has currently only been tested when deployed to region *West Europe* so  create a new resource group there during deployment for testing.
+This template deploys everything into a single resource group. The VM will get created in the resource group region with the Automation account and Log Analytics workspace created in the supplied region.
 
 ## Templates used in the deployment
 
