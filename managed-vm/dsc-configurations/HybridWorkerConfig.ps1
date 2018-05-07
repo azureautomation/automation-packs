@@ -8,7 +8,7 @@ Configuration HybridWorkerConfig
         [String]$VMName 
     )
 
-    Import-DscResource -ModuleName HybridRunbookWorkerDsc -ModuleVersion 1.0.0.1
+    Import-DscResource -ModuleName HybridRunbookWorkerDsc -ModuleVersion 1.0.0.2
 
     $AutomationEndpoint = Get-AutomationVariable AutomationEndpoint
     $AutomationKey = Get-AutomationPSCredential AutomationCredential

@@ -56,7 +56,7 @@
     "dscModules": {
       "HybridWorker": {
         "moduleName": "HybridRunbookWorkerDsc",
-        "moduleUri": "https://devopsgallerystorage.blob.core.windows.net/packages/hybridrunbookworkerdsc.1.0.0.1.nupkg"
+        "moduleUri": "https://devopsgallerystorage.blob.core.windows.net/packages/hybridrunbookworkerdsc.1.0.0.2.nupkg"
       }
     }
   },
