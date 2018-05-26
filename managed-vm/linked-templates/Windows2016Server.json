@@ -27,7 +27,7 @@
 				"description": "VM size"
 			},
 			"allowedValues": [
-				"Standard_D1",
+				"Standard_DS1_v2",
 				"Standard_D2",
 				"Standard_D3",
 				"Standard_D4",
