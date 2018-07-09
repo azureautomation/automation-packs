@@ -7,12 +7,12 @@
 
 This Azure Resource Manager template deploys a new Windows Server 2016 VM, installs the DSC extension and applies a DSC configuration.
 
-##Resources Deployed
+## Resources Deployed
 
 1. Windows Server 2016 Datacenter VM using Standard DS1 scale.
 2. Microsoft.PowerShell.DSC VM extension.
 
-##Inputs
+## Inputs
 
 Deployment of the template will prompt for the following inputs:
 
