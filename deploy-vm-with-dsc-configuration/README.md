@@ -6,3 +6,21 @@
 </a>
 
 This Azure Resource Manager template deploys a new Windows Server 2016 VM, installs the DSC extension and applies a DSC configuration.
+
+##Resources Deployed
+
+1. Windows Server 2016 Datacenter VM using Standard DS1 scale.
+2. Microsoft.PowerShell.DSC VM extension.
+
+##Inputs
+
+Deployment of the template will prompt for the following inputs:
+
+- Resource Group Name: The name of the resource group where the VM is to be deployed.
+- Region: The region where the VM VM will be deployed.
+- VM Name: The name given to the VM to be deployed.
+- Username: The username that will be configured as the administrator for the VM.
+- Password: The password that will be configured for the administrator account.
+- Account Name: The automation account that will be used to link for DSC configuration (this must already exist).
+- Account Resource Group Name: The resource group where the automation account resides (this must already exist).
+- Node Configuration Name: The name of the DSC node configuration to be applied to the VM (this must already exist).
