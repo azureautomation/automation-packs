@@ -1,0 +1,101 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of VM"
+      }
+    },
+    "Username": {
+      "type": "string",
+      "metadata": {
+        "description": "The name user to add with access to the VM."
+      }
+    },
+    "Password": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password of the user"
+      }
+    },
+    "accountName": {
+      "type": "string",
+      "minLength": 6,
+      "metadata": {
+        "description": "The name of the Automation account to connect to DSC."
+      }
+    },
+    "accountResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group where the automation account exists."
+      }
+    },
+    "nodeConfigurationName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the node configuration to apply to the VM."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "ManagedVM",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/deploy-vm-with-dsc-configuration/linked-templates/Windows2016Server.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "username": {
+            "value": "[parameters('username')]"
+          },
+          "password": {
+            "value": "[parameters('password')]"
+          },
+          "vmName": {
+            "value": "[parameters('VMName')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "DSCAgent",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'ManagedVM')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/deploy-vm-with-dsc-configuration/linked-templates/dscagent.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "accountName": {
+            "value": "[parameters('accountName')]"
+          },
+          "accountResourceGroupName": {
+            "value": "[parameters('accountResourceGroupName')]"
+          },
+          "nodeConfigurationName": {
+            "value": "[parameters('nodeConfigurationName')]"
+          },
+          "vmName": {
+            "value": "[parameters('VMName')]"
+          },
+          "vmRegion": {
+            "value": "[resourceGroup().location]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}
