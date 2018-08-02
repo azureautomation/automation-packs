@@ -43,7 +43,7 @@
         },
         "runbookParameters": {
             "type": "string",
-            "defaultValue": "{\"Name\": \"Automation\"}",
+            "defaultValue": "'{\"Name\": \"Automation\"}'",
             "metadata": {
                 "description": "Parameters for the runbook in json format. Example '{\"Name\": \"Automation\"}'"
             }
