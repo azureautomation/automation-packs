@@ -1,0 +1,113 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Automation account to deploy to."
+            }
+        },
+        "regionId": {
+            "type": "string",
+            "allowedValues": [
+                "Japan East",
+                "East US 2",
+                "West Europe",
+                "Southeast Asia",
+                "South Central US",
+                "West Central US",
+                "Canada Central",
+                "Brazil South",
+                "North Europe",
+                "UK South",
+                "Austrialia Southeast"
+            ],
+            "metadata": {
+                "description": "The region to deploy the Automation account in."
+            }
+        },
+        "runbookUri": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-import-and-start-job/Runbooks/Hello-World.ps1",
+            "metadata": {
+                "description": "The Uri of the runbook to import into the account"
+            }
+        },
+        "runbookName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the runbook to start."
+            }
+        },
+        "runbookParameters": {
+            "type": "string",
+            "defaultValue": "{\"Name\": \"Automation\"}",
+            "metadata": {
+                "description": "Parameters for the runbook in json format. Example '{\"Name\": \"Automation\"}'"
+            }
+        }
+    },
+    "variables": {
+        "sku": "Basic"
+    },
+    "resources": [
+        {
+            "name": "[parameters('accountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-10-31",
+            "location": "[parameters('regionId')]",
+            "dependsOn": [],
+            "tags": {},
+            "properties": {
+                "sku": {
+                    "name": "[variables('sku')]"
+                }
+            },
+            "resources": [
+                {
+                    "name": "[parameters('runbookName')]",
+                    "type": "runbooks",
+                    "apiVersion": "2015-10-31",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "runbookType": "PowerShell",
+                        "logProgress": false,
+                        "logVerbose": false,
+                        "description": "",
+                        "publishContentLink": {
+                            "uri": "[parameters('runbookUri')]",
+                            "version": "1.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "name": "[guid(resourceGroup().id, deployment().name)]" ,
+                    "type": "jobs",
+                    "apiVersion": "2015-10-31",
+                    "location": "[parameters('regionId')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/',parameters('runbookName'))]"
+                    ],
+                    "tags": {
+                        "key": "value"
+                    },
+                    "properties": {
+                        "runbook": {
+                            "name": "[parameters('runbookName')]"
+                        },
+                        "parameters":{
+                            "JsonParameterList":"[parameters('runbookParameters')]"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {}
+}
