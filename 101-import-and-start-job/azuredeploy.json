@@ -36,6 +36,7 @@
         },
         "runbookName": {
             "type": "string",
+            "defaultValue": "Hello-World",
             "metadata": {
                 "description": "The name of the runbook to start."
             }
@@ -86,7 +87,7 @@
                     }
                 },
                 {
-                    "name": "[guid(resourceGroup().id, deployment().name)]" ,
+                    "name": "[guid(subscription().subscriptionId, resourceGroup().id, deployment().name, parameters('runbookName'))]" ,
                     "type": "jobs",
                     "apiVersion": "2015-10-31",
                     "location": "[parameters('regionId')]",

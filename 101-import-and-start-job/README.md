@@ -15,4 +15,4 @@ The runbook is a simple hello world PowerShell script that takes in a json strin
 
 ### Job
 
-A job will be triggered once the other resources are deployed.  The job needs a unique GUID as the jobId. This is determined by getting a unique guid based on the resource group and deployment name using [guid(resourceGroup().id, deployment().name)]. If you redeploy this template then you should give a different name for the deployment to ensure a new job gets created.
+A job will be triggered once the other resources are deployed.  The job needs a unique GUID as the jobId. This is determined by getting a unique guid based on the resource group and deployment name, subscription, and runbook name using [guid(subscription().subscriptionId, resourceGroup().id, deployment().name, parameters('runbookName'))]. If you redeploy this template then you should give a different name for the deployment to ensure a new job gets created.
