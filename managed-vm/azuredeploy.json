@@ -271,7 +271,7 @@
         "value": "[resourceGroup().name]"
       },
       "nodeConfigurationName": {
-        "value": "HybridWorkerConfig.Demo"
+        "value": "[concat('HybridWorkerConfig.', parameters('VMName'))]"
       },      
       "vmName": {
         "value": "[parameters('VMName')]"

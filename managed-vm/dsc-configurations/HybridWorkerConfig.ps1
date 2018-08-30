@@ -13,7 +13,7 @@ Configuration HybridWorkerConfig
     $AutomationEndpoint = Get-AutomationVariable AutomationEndpoint
     $AutomationKey = Get-AutomationPSCredential AutomationCredential
 
-    Node "Demo"
+    Node $VMName
     {   
         # Wait 20 minutes for hybrid worker bits to be downloaded, else fail.
         WaitForHybridRegistrationModule ModuleWait
