@@ -1,8 +1,8 @@
 {
-    "accountName": {
-        "value": "MyAutomationAccount"
-    },
-    "regionId": {
-        "value": "southcentralus"
-    }
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "regionId": {
+    "value": "southcentralus"
+  }
 }

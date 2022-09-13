@@ -1,42 +1,41 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "accountName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the Log Analytics workspace."
-        }
-      },
-      "accountResourceGroupName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the Log Analytics workspace."
-        }
-      },
-      "workspaceName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the Log Analytics workspace."
-        }
-      },
-        "workspaceRegion": {
-          "type": "string",
-          "metadata": {
-            "description": "The region of the Log Analytics workspace."
-          }       
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Log Analytics workspace."
       }
     },
-    "resources": [
+    "accountResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Log Analytics workspace."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Log Analytics workspace."
+      }
+    },
+    "workspaceRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "The region of the Log Analytics workspace."
+      }
+    }
+  },
+  "resources": [
     {
       "name": "[concat(parameters('workspaceName'), '/' , 'Automation')]",
       "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
       "apiVersion": "2015-11-01-preview",
       "location": "[parameters('workspaceRegion')]",
       "properties": {
-          "resourceId": "[resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+        "resourceId": "[resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
       }
-    } 
-    ]
+    }
+  ]
 }
-  

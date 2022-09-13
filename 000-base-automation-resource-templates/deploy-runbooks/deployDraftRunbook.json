@@ -1,85 +1,75 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
-            }
-        },
-        "regionId": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region the Automaiton account is located in."
-            }
-        },
-        "runbookName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name for the runbook. The name must match the name in the URI."
-            }
-        },
-        "runbookURI": {
-            "type": "string",
-            "metadata": {
-                "description": "The URI for the runbook. "
-            }
-        },
-        "runbookType": {
-            "type": "string",
-            "allowedValues": [
-                "Graph",
-                "Script"
-            ],
-            "metadata": {
-                "description": "The type of runbook"
-            }
-        },
-        "runbookDescription": {
-            "type": "string",
-            "metadata": {
-                "description": "The description of the runbook."
-            }
-        }
-
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
+      }
     },
-    "variables": {
-
+    "regionId": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region the Automaiton account is located in."
+      }
     },
-
-    "resources": [
-
-        {
-            "name": "[concat(parameters('accountName'), '/', parameters('runbookName'))]",
-            "type": "microsoft.automation/automationAccounts/runbooks",
-            "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('regionId')]",
-            "tags": {
-            },
-            "properties": {
-                "runbookType": "[parameters('runbookType')]",
-                "logProgress": "false",
-                "logVerbose": "false",
-                "description": "[parameters('runbookDescription')]",
-                "draft": {
-                    "draftContentLink": {
-                        "uri": "[parameters('runbookURI')]",
-                        "version": "1.0.0.0"
-                    }
-                }
-            }
-        }
-
-    ],
-
-    "outputs": {
+    "runbookName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name for the runbook. The name must match the name in the URI."
+      }
+    },
+    "runbookURI": {
+      "type": "string",
+      "metadata": {
+        "description": "The URI for the runbook. "
+      }
+    },
+    "runbookType": {
+      "type": "string",
+      "allowedValues": ["Graph", "Script"],
+      "metadata": {
+        "description": "The type of runbook"
+      }
+    },
+    "runbookDescription": {
+      "type": "string",
+      "metadata": {
+        "description": "The description of the runbook."
+      }
     }
+  },
+  "variables": {},
+
+  "resources": [
+    {
+      "name": "[concat(parameters('accountName'), '/', parameters('runbookName'))]",
+      "type": "microsoft.automation/automationAccounts/runbooks",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('regionId')]",
+      "tags": {},
+      "properties": {
+        "runbookType": "[parameters('runbookType')]",
+        "logProgress": "false",
+        "logVerbose": "false",
+        "description": "[parameters('runbookDescription')]",
+        "draft": {
+          "draftContentLink": {
+            "uri": "[parameters('runbookURI')]",
+            "version": "1.0.0.0"
+          }
+        }
+      }
+    }
+  ],
+
+  "outputs": {}
 }

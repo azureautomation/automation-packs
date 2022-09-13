@@ -21,46 +21,39 @@
       }
     },
     "softwareDeploymentName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the software update configuration"
-        }
+      "type": "string",
+      "metadata": {
+        "description": "The name of the software update configuration"
       }
-},
+    }
+  },
   "resources": [
     {
-        "name": "[concat(parameters('accountName'), '/', parameters('softwareDeploymentName'))]",
-        "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
-        "apiVersion": "2017-05-15-preview",
-        "location":"[parameters('accountRegion')]",
-            "properties": {
-              "updateConfiguration": {
-                "operatingSystem": "Windows",
-                "duration": "PT2H0M",
-                "windows": {
-                  "excludedKbNumbers": [
-                    "123456",
-                    "233421"
-                  ],
-                  "includedUpdateClassifications": "Critical,Security"
-                },
-                "azureVirtualMachines": [
-                  "[parameters('VMResourceId')]"
-                ]
-              },
-              "scheduleInfo": {
-                "frequency": "Week",
-                "startTime": "2020-10-19T12:22:57+00:00",
-                "timeZone": "America/Los_Angeles",
-                "interval": 1,
-                "expiryTime": "2021-11-09T11:22:57+00:00",
-                "advancedSchedule": {
-                  "weekDays": [
-                    "Sunday"
-                  ]
-                }
-              }
-            }
-          }         
-        ]
+      "name": "[concat(parameters('accountName'), '/', parameters('softwareDeploymentName'))]",
+      "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
+      "apiVersion": "2017-05-15-preview",
+      "location": "[parameters('accountRegion')]",
+      "properties": {
+        "updateConfiguration": {
+          "operatingSystem": "Windows",
+          "duration": "PT2H0M",
+          "windows": {
+            "excludedKbNumbers": ["123456", "233421"],
+            "includedUpdateClassifications": "Critical,Security"
+          },
+          "azureVirtualMachines": ["[parameters('VMResourceId')]"]
+        },
+        "scheduleInfo": {
+          "frequency": "Week",
+          "startTime": "2020-10-19T12:22:57+00:00",
+          "timeZone": "America/Los_Angeles",
+          "interval": 1,
+          "expiryTime": "2021-11-09T11:22:57+00:00",
+          "advancedSchedule": {
+            "weekDays": ["Sunday"]
+          }
+        }
+      }
     }
+  ]
+}

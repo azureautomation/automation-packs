@@ -1,7 +1,8 @@
 # Import a runbook, and start a job using parameters
+
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazureautomation%2Fautomation-packs%2Fmaster%2F101-import-and-start-job%2Fazuredeploy.json)
 
-This sample shows how you can deploy a runbook, a credential the runbook and start a job with parameters through an Azure Resource Manager template. 
+This sample shows how you can deploy a runbook, a credential the runbook and start a job with parameters through an Azure Resource Manager template.
 
 ## Resources Deployed
 
@@ -15,4 +16,4 @@ The runbook is a simple hello world PowerShell script that takes in a json strin
 
 ### Job
 
-A job will be triggered once the other resources are deployed.  The job needs a unique GUID as the jobId. This is determined by getting a unique guid based on the resource group and deployment name, subscription, and runbook name using [guid(subscription().subscriptionId, resourceGroup().id, deployment().name, parameters('runbookName'))]. If you redeploy this template then you should give a different name for the deployment to ensure a new job gets created.
+A job will be triggered once the other resources are deployed. The job needs a unique GUID as the jobId. This is determined by getting a unique guid based on the resource group and deployment name, subscription, and runbook name using [guid(subscription().subscriptionId, resourceGroup().id, deployment().name, parameters('runbookName'))]. If you redeploy this template then you should give a different name for the deployment to ensure a new job gets created.

@@ -1,46 +1,46 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Azure Automation account to deploy the configuration in."
-            }
-        },
-        "location": {
-            "type": "string",
-            "metadata": {
-                "description": "The location of the Azure Automation account."
-            }
-        },
-        "configurationName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the DSC configuration. The name must match the configuration name in the script"
-            }
-        },
-        "jobId": {
-            "type": "string",
-            "metadata": {
-                "description": "the job id to compile the configuration"
-            }
-        }
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Automation account to deploy the configuration in."
+      }
     },
-    "variables": {},
-    "resources": [
-        {
-            "name": "[concat(parameters('accountName'), '/', parameters('jobId'))]",
-            "type": "Microsoft.Automation/AutomationAccounts/Compilationjobs",
-            "apiVersion": "2015-01-01-preview",
-            "location": "parameters('location')]",
-            "tags": {},
-            "properties": {
-                "configuration": {
-                    "name": "[parameters('configurationName')]"
-                }
-            }
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the Azure Automation account."
+      }
+    },
+    "configurationName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the DSC configuration. The name must match the configuration name in the script"
+      }
+    },
+    "jobId": {
+      "type": "string",
+      "metadata": {
+        "description": "the job id to compile the configuration"
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[concat(parameters('accountName'), '/', parameters('jobId'))]",
+      "type": "Microsoft.Automation/AutomationAccounts/Compilationjobs",
+      "apiVersion": "2015-01-01-preview",
+      "location": "parameters('location')]",
+      "tags": {},
+      "properties": {
+        "configuration": {
+          "name": "[parameters('configurationName')]"
         }
-    ],
-    "outputs": {}
+      }
+    }
+  ],
+  "outputs": {}
 }

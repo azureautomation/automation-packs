@@ -7,7 +7,6 @@
   },
   "credentialName": {
     "value": "domainCreds"
-
   },
   "userName": {
     "value": "\"DOMAIN\\Account\""
@@ -17,7 +16,6 @@
   },
   "variableName": {
     "value": "domainName"
-
   },
   "variableType": {
     "value": "string"
@@ -40,4 +38,4 @@
   "jobConfigurationData": {
     "type": "{\"AllNodes\":[{\"NodeName\":\"*\",\"PSDscAllowPlainTextPassword\":true},{\"NodeName\":\"SRV001\"},{\"NodeName\":\"SRV002\"}]}"
   }
-} 
+}

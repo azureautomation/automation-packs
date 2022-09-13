@@ -1,14 +1,14 @@
 {
-    "accountName": {
-        "value": "MyAutomationAccount"
-    },
-    "location": {
-        "value": "Japan East"
-    },
-    "pricingTier": {
-        "value": "Free"
-    },
-    "blankRunbokName": {
-        "value": "Hello-BlankRunbook"
-    }
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "location": {
+    "value": "Japan East"
+  },
+  "pricingTier": {
+    "value": "Free"
+  },
+  "blankRunbokName": {
+    "value": "Hello-BlankRunbook"
+  }
 }

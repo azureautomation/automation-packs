@@ -1,99 +1,91 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Azure Automation account to deploy to."
-            }
-        },
-        "regionId": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region to deploy the Automation account in."
-            }
-        },
-        "pricingTier": {
-            "type": "string",
-            "allowedValues": [
-                "Free",
-                "Basic"
-            ],
-            "metadata": {
-                "description": "The pricing tier for the account."
-            }
-        },
-        "connectionName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Azure Automation connection asset. The connection type must be deployed before you can deploy the connection.  In this case, we are using Azure since that is created for all users."
-            }
-        },
-        "connectionCertificateName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the certificate used for Azure auth."
-            }
-        },
-        "connectionSubscriptionId": {
-            "type": "string",
-            "metadata": {
-                "description": "The ID of the Azure subscription you want to connect to."
-            }
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Automation account to deploy to."
+      }
+    },
+    "regionId": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region to deploy the Automation account in."
+      }
+    },
+    "pricingTier": {
+      "type": "string",
+      "allowedValues": ["Free", "Basic"],
+      "metadata": {
+        "description": "The pricing tier for the account."
+      }
+    },
+    "connectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Automation connection asset. The connection type must be deployed before you can deploy the connection.  In this case, we are using Azure since that is created for all users."
+      }
+    },
+    "connectionCertificateName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the certificate used for Azure auth."
+      }
+    },
+    "connectionSubscriptionId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the Azure subscription you want to connect to."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [],
+      "tags": {},
+      "properties": {
+        "sku": {
+          "name": "[parameters('pricingTier')]"
         }
-    },
-    "variables": {
-
-    },
-    "resources": [
+      },
+      "resources": [
         {
-            "name": "[parameters('accountName')]",
-            "type": "Microsoft.Automation/automationAccounts",
-            "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [ ],
-            "tags": { },
-            "properties": {
-                "sku": {
-                    "name": "[parameters('pricingTier')]"
-                }
+          "name": "[parameters('connectionName')]",
+          "type": "connections",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "name": "[parameters('connectionName')]",
+            "description": "Dummy Azure connection",
+            "isGlobal": false,
+            "connectionType": {
+              "name": "Azure"
             },
-            "resources": [
-
-                {
-                    "name": "[parameters('connectionName')]",
-                    "type": "connections",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {
-                    },
-                    "properties": {
-                        "name": "[parameters('connectionName')]",
-                        "description": "Dummy Azure connection",
-                        "isGlobal": false,
-                        "connectionType": {
-                            "name": "Azure"
-                        },
-                        "fieldDefinitionValues": {
-                            "AutomationCertificateName": "[parameters('connectionCertificateName')]",
-                            "SubscriptionID": "[parameters('connectionSubscriptionId')]"
-                        }
-                    }
-
-                }
-            ]
+            "fieldDefinitionValues": {
+              "AutomationCertificateName": "[parameters('connectionCertificateName')]",
+              "SubscriptionID": "[parameters('connectionSubscriptionId')]"
+            }
+          }
         }
-    ],
-    "outputs": { }
+      ]
+    }
+  ],
+  "outputs": {}
 }

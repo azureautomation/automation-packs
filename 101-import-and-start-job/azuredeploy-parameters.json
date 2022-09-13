@@ -1,17 +1,17 @@
 {
-    "accountName": {
-        "value": "ContosoAccountEamon1"
-    },
-    "runbookUri": {
-        "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-import-and-start-job/Runbooks/Hello-World.ps1"
-    },
-    "runbookName": {
-        "value": "Hello-World"
-    },
-    "runbookParameters": {
-        "value": "'{\"Name\": \"Automation\"}'"
-    },
-    "regionId": {
-        "value": "West Central US"
-    }
+  "accountName": {
+    "value": "ContosoAccountEamon1"
+  },
+  "runbookUri": {
+    "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/101-import-and-start-job/Runbooks/Hello-World.ps1"
+  },
+  "runbookName": {
+    "value": "Hello-World"
+  },
+  "runbookParameters": {
+    "value": "'{\"Name\": \"Automation\"}'"
+  },
+  "regionId": {
+    "value": "West Central US"
+  }
 }

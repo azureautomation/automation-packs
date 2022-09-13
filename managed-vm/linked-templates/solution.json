@@ -1,67 +1,67 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "outputs": {
-      "WorkspaceId": {
-        "type": "string",
-        "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-11-01-preview').customerId]"
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "outputs": {
+    "WorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-11-01-preview').customerId]"
+    }
+  },
+  "parameters": {
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Log Analytics workspace."
       }
     },
-    "parameters": {
-      "workspaceName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the Log Analytics workspace."
-        }
-      },
-      "workspaceRegion": {
-        "type": "string",
-        "metadata": {
-          "description": "The region for the Log Analytics workspace."
-        }
-      },
-      "solutionName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the solution."
-        }
+    "workspaceRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "The region for the Log Analytics workspace."
       }
     },
-    "resources": [
-      {
-        "apiVersion": "2017-03-15-preview",
-        "location": "[parameters('workspaceRegion')]",
-        "name": "[parameters('workspaceName')]",
-        "type": "Microsoft.OperationalInsights/workspaces",
-        "comments": "Azure Log Analytics workspace",
-        "properties": {
-          "sku": {
-            "name": "Standalone"
-          },
-          "features": {
-            "legacy": 0,
-            "searchVersion": 1
-          }
-        }
-      },
-      {
-        "apiVersion": "2015-11-01-preview",
-        "type": "Microsoft.OperationsManagement/solutions",
-        "location": "[parameters('workspaceRegion')]",
-        "name": "[concat(parameters('solutionName'),'(', parameters('workspaceName'),')')]",
-        "dependsOn": [
-          "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
-        ],
-        "id": "[resourceId('Microsoft.OperationsManagement/solutions', concat(parameters('solutionName'),'(', parameters('workspaceName'),')'))]",
-        "properties": {
-          "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+    "solutionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the solution."
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-03-15-preview",
+      "location": "[parameters('workspaceRegion')]",
+      "name": "[parameters('workspaceName')]",
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "comments": "Azure Log Analytics workspace",
+      "properties": {
+        "sku": {
+          "name": "Standalone"
         },
-        "plan": {
-          "name": "[concat(parameters('solutionName'),'(', parameters('workspaceName'),')')]",
-          "product": "[concat('OMSGallery/', parameters('solutionName'))]",
-          "promotionCode": "",
-          "publisher": "Microsoft"
+        "features": {
+          "legacy": 0,
+          "searchVersion": 1
         }
       }
-    ]
-  }
+    },
+    {
+      "apiVersion": "2015-11-01-preview",
+      "type": "Microsoft.OperationsManagement/solutions",
+      "location": "[parameters('workspaceRegion')]",
+      "name": "[concat(parameters('solutionName'),'(', parameters('workspaceName'),')')]",
+      "dependsOn": [
+        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+      ],
+      "id": "[resourceId('Microsoft.OperationsManagement/solutions', concat(parameters('solutionName'),'(', parameters('workspaceName'),')'))]",
+      "properties": {
+        "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+      },
+      "plan": {
+        "name": "[concat(parameters('solutionName'),'(', parameters('workspaceName'),')')]",
+        "product": "[concat('OMSGallery/', parameters('solutionName'))]",
+        "promotionCode": "",
+        "publisher": "Microsoft"
+      }
+    }
+  ]
+}

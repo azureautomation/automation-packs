@@ -1,86 +1,79 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Azure Automation account to deploy to."
-            }
-        },
-        "regionId": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region to deploy the Automation account in."
-            }
-        },
-        "pricingTier": {
-            "type": "string",
-            "allowedValues": [
-                "Free",
-                "Basic"
-            ],
-            "metadata": {
-                "description": "The pricing tier for the account."
-            }
-        },
-        "variableName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the variable"
-            }
-        },
-        "variableValue": {
-            "type": "string",
-            "metadata": {
-                "description": "The value for the variable.  In this case, a string value."
-            }
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Automation account to deploy to."
+      }
+    },
+    "regionId": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region to deploy the Automation account in."
+      }
+    },
+    "pricingTier": {
+      "type": "string",
+      "allowedValues": ["Free", "Basic"],
+      "metadata": {
+        "description": "The pricing tier for the account."
+      }
+    },
+    "variableName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the variable"
+      }
+    },
+    "variableValue": {
+      "type": "string",
+      "metadata": {
+        "description": "The value for the variable.  In this case, a string value."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [],
+      "tags": {},
+      "properties": {
+        "sku": {
+          "name": "[parameters('pricingTier')]"
         }
-    },
-    "variables": {
-
-    },
-    "resources": [
+      },
+      "resources": [
         {
-            "name": "[parameters('accountName')]",
-            "type": "Microsoft.Automation/automationAccounts",
-            "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [ ],
-            "tags": { },
-            "properties": {
-                "sku": {
-                    "name": "[parameters('pricingTier')]"
-                }
-            },
-            "resources": [
-                
-                {
-                    "name": "[parameters('variableName')]",
-                    "type": "variables",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {
-                    },
-                    "properties": {
-                        "description": "Some description",
-                        "isEncrypted": 0,
-                        "type": "string",
-                        "value": "[concat('\"', parameters('variableValue'),'\"')]"
-                    }
-                }
-            ]
+          "name": "[parameters('variableName')]",
+          "type": "variables",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "Some description",
+            "isEncrypted": 0,
+            "type": "string",
+            "value": "[concat('\"', parameters('variableValue'),'\"')]"
+          }
         }
-    ],
-    "outputs": {}
+      ]
+    }
+  ],
+  "outputs": {}
 }

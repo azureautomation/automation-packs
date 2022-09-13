@@ -1,17 +1,17 @@
 {
-    "accountName": {
-        "value": "MyAutomationAccount"
-    },
-    "regionId": {
-        "value": "East US 2"
-    },
-    "pricingTier":{
-	"value":"Free"
-    },
-    "variableName": {
-        "value": "MyVariableName"
-    },
-    "variableValue": {
-        "value": "MyStringValue"
-    }
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "regionId": {
+    "value": "East US 2"
+  },
+  "pricingTier": {
+    "value": "Free"
+  },
+  "variableName": {
+    "value": "MyVariableName"
+  },
+  "variableValue": {
+    "value": "MyStringValue"
+  }
 }

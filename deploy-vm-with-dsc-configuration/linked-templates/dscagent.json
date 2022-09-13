@@ -1,110 +1,110 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "accountName": {
-            "metadata": {
-                "description": "The name of the Azure Automation account to deploy to."
-            },
-            "type": "string"
-        },
-        "accountResourceGroupName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the resource group for the Automation account."
-            }
-        },
-        "nodeConfigurationName": {
-            "type": "string",
-            "metadata": {
-                "description": "The node configuration name to apply"
-            }
-        },
-        "vmName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the VM to enable the DSC extension on."
-            }
-        },
-        "vmRegion": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the VM resource group"
-            }
-        }
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "metadata": {
+        "description": "The name of the Azure Automation account to deploy to."
+      },
+      "type": "string"
     },
-    "resources": [
-        {
-            "name": "[concat(parameters('vmName'),'/Microsoft.Powershell.DSC')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('vmRegion')]",
-            "tags": {
-                "AutomationAccountARMID": "[resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+    "accountResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group for the Automation account."
+      }
+    },
+    "nodeConfigurationName": {
+      "type": "string",
+      "metadata": {
+        "description": "The node configuration name to apply"
+      }
+    },
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the VM to enable the DSC extension on."
+      }
+    },
+    "vmRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the VM resource group"
+      }
+    }
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('vmName'),'/Microsoft.Powershell.DSC')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[parameters('vmRegion')]",
+      "tags": {
+        "AutomationAccountARMID": "[resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+      },
+      "apiVersion": "2015-06-15",
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.74",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "Properties": [
+            {
+              "Name": "RegistrationKey",
+              "Value": {
+                "UserName": "PLACEHOLDER_DONOTUSE",
+                "Password": "PrivateSettingsRef:registrationKeyPrivate"
+              },
+              "TypeName": "System.Management.Automation.PSCredential"
             },
-            "apiVersion": "2015-06-15",
-            "properties": {
-                "publisher": "Microsoft.Powershell",
-                "type": "DSC",
-                "typeHandlerVersion": "2.74",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "Properties": [
-                        {
-                            "Name": "RegistrationKey",
-                            "Value": {
-                                "UserName": "PLACEHOLDER_DONOTUSE",
-                                "Password": "PrivateSettingsRef:registrationKeyPrivate"
-                            },
-                            "TypeName": "System.Management.Automation.PSCredential"
-                        },
-                        {
-                            "Name": "RegistrationUrl",
-                            "Value": "[reference(resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName')),'2015-01-01-preview').RegistrationUrl]",
-                            "TypeName": "System.String"
-                        },
-                        {
-                            "Name": "ConfigurationMode",
-                            "Value": "ApplyAndAutoCorrect",
-                            "TypeName": "System.String"
-                        },
-                        {
-                            "Name": "NodeConfigurationName",
-                            "Value": "[parameters('nodeConfigurationName')]",
-                            "TypeName": "System.String"
-                        },
-                        {
-                            "Name": "ConfigurationModeFrequencyMins",
-                            "Value": "15",
-                            "TypeName": "System.Int32"
-                        },
-                        {
-                            "Name": "RefreshFrequencyMins",
-                            "Value": "30",
-                            "TypeName": "System.Int32"
-                        },
-                        {
-                            "Name": "RebootNodeIfNeeded",
-                            "Value": true,
-                            "TypeName": "System.Boolean"
-                        },
-                        {
-                            "Name": "AllowModuleOverwrite",
-                            "Value": true,
-                            "TypeName": "System.Boolean"
-                        },
-                        {
-                            "Name": "ActionAfterReboot",
-                            "Value": "ContinueConfiguration",
-                            "TypeName": "System.String"
-                        }
-                    ]
-                },
-                "protectedSettings": {
-                    "Items": {
-                        "registrationKeyPrivate": "[listKeys(resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').Keys[0].value]"
-                    }
-                }
+            {
+              "Name": "RegistrationUrl",
+              "Value": "[reference(resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName')),'2015-01-01-preview').RegistrationUrl]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationMode",
+              "Value": "ApplyAndAutoCorrect",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "NodeConfigurationName",
+              "Value": "[parameters('nodeConfigurationName')]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationModeFrequencyMins",
+              "Value": "15",
+              "TypeName": "System.Int32"
+            },
+            {
+              "Name": "RefreshFrequencyMins",
+              "Value": "30",
+              "TypeName": "System.Int32"
+            },
+            {
+              "Name": "RebootNodeIfNeeded",
+              "Value": true,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "AllowModuleOverwrite",
+              "Value": true,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "ActionAfterReboot",
+              "Value": "ContinueConfiguration",
+              "TypeName": "System.String"
             }
+          ]
+        },
+        "protectedSettings": {
+          "Items": {
+            "registrationKeyPrivate": "[listKeys(resourceId(parameters('accountResourceGroupName'), 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').Keys[0].value]"
+          }
         }
-    ]
+      }
+    }
+  ]
 }

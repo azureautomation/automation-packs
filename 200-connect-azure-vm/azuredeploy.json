@@ -1,100 +1,98 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Azure Automation account to deploy to."
-            }
-        },
-        "regionId": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region to deploy the Automation account in."
-            }
-        },
-        "userName": {
-            "type": "string",
-            "metadata": {
-                "description": "The username for the Azure Automation credential used to authenticate to Azure."
-            }
-        },
-        "password": {
-            "type": "securestring",
-            "metadata": {
-                "description": "The password for the Azure Automation credential."
-            }
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Automation account to deploy to."
+      }
+    },
+    "regionId": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region to deploy the Automation account in."
+      }
+    },
+    "userName": {
+      "type": "string",
+      "metadata": {
+        "description": "The username for the Azure Automation credential used to authenticate to Azure."
+      }
+    },
+    "password": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the Azure Automation credential."
+      }
+    }
+  },
+  "variables": {
+    "pricingTier": "Free",
+    "runbookName": "Connect-AzureVM",
+    "scriptUri": "https://gallery.technet.microsoft.com/scriptcenter/Connect-to-an-Azure-85f0782c/file/131573/1/Connect-AzureVM.ps1",
+    "runbookDescription": "Sets up a connection to an Azure Virtual Machine",
+    "credentialName": "DefaultAzureCredential"
+  },
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [],
+      "tags": {},
+      "properties": {
+        "sku": {
+          "name": "[variables('pricingTier')]"
         }
-    },
-    "variables": {
-        "pricingTier":  "Free",
-        "runbookName": "Connect-AzureVM",
-        "scriptUri": "https://gallery.technet.microsoft.com/scriptcenter/Connect-to-an-Azure-85f0782c/file/131573/1/Connect-AzureVM.ps1",
-        "runbookDescription": "Sets up a connection to an Azure Virtual Machine",
-        "credentialName":  "DefaultAzureCredential"
-
-    },
-    "resources": [
+      },
+      "resources": [
         {
-            "name": "[parameters('accountName')]",
-            "type": "Microsoft.Automation/automationAccounts",
-            "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [ ],
-            "tags": { },
-            "properties": {
-                "sku": {
-                    "name": "[variables('pricingTier')]"
-                }
-            },
-            "resources": [
-                {
-                    "name": "[variables('runbookName')]",
-                    "type": "runbooks",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {
-                    },
-                    "properties": {
-                        "runbookType": "Script",
-                        "logProgress": "false",
-                        "logVerbose": "false",
-                        "description": "[variables('runbookDescription')]",
-                        "draft": {
-                            "draftContentLink": {
-                                "uri": "[variables('scriptUri')]",
-                                "version": "1.0.0.0"
-                            }
-                        }
-                    }
-                },
-                {
-                    "name": "[variables('credentialName')]",
-                    "type": "credentials",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": { },
-                    "properties": {
-                        "userName": "[parameters('userName')]",
-                        "password": "[parameters('password')]"
-                    }
-                }
-            ]
+          "name": "[variables('runbookName')]",
+          "type": "runbooks",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbookType": "Script",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "[variables('runbookDescription')]",
+            "draft": {
+              "draftContentLink": {
+                "uri": "[variables('scriptUri')]",
+                "version": "1.0.0.0"
+              }
+            }
+          }
+        },
+        {
+          "name": "[variables('credentialName')]",
+          "type": "credentials",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "userName": "[parameters('userName')]",
+            "password": "[parameters('password')]"
+          }
         }
-    ],
-    "outputs": {}
+      ]
+    }
+  ],
+  "outputs": {}
 }

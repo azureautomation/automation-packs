@@ -1,84 +1,77 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
-            }
-        },
-        "location": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region to deploy the Automation account in."
-            }
-        },
-        "moduleName": {
-            "type": "string",
-            "defaultValue": "Hello-WorldModule",
-            "metadata": {
-                "description": "The name of the module to deploy.  This must be the same name as the .zip foldername."
-            }
-        },
-        "moduleUri": {
-            "type": "string",
-            "defaultValue": "https://github.com/azureautomation/automation-packs/raw/7c2a7c901099b384a05e17261d3c6b4192e841b4/101-sample-automation-resource-templates/sample-deploy-module/modules/Hello-WorldModule.zip",
-            "metadata": {
-                "description": "The URL for the module zip file to upload to Azure Automation. To learn about authoring modules for Automation see: http://azure.microsoft.com/blog/2014/12/15/authoring-integration-modules-for-azure-automation/"
-            }
-        }
-
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account."
+      }
     },
-        "variables": {
-
-        },
-        "resources": [
-            {
-                "name": "[parameters('accountName')]",
-                "type": "Microsoft.Automation/automationAccounts",
-                "apiVersion": "2015-01-01-preview",
-                "location": "[parameters('location')]",
-                "dependsOn": [
-                ],
-                "tags": {
-                    "key": "value"
-                },
-                "properties": {
-                    "comment": "Resource defined structure",
-                    "sku": {
-                        "name": "Free"
-                    }
-                },
-                "resources": [
-                    {
-                        "name": "[parameters('moduleName')]",
-                        "type": "modules",
-                        "apiVersion": "2015-01-01-preview",
-                        "location": "[parameters('location')]",
-                        "dependsOn": [
-                            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                        ],
-                        "tags": {
-                        },
-                        "properties": {
-                            "contentLink": {
-                                "uri": "[parameters('moduleUri')]"
-                            }
-                        }
-                    }
-
-                ]
-            }
-        ],
-
-        "outputs": {
-        }
+    "location": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region to deploy the Automation account in."
+      }
+    },
+    "moduleName": {
+      "type": "string",
+      "defaultValue": "Hello-WorldModule",
+      "metadata": {
+        "description": "The name of the module to deploy.  This must be the same name as the .zip foldername."
+      }
+    },
+    "moduleUri": {
+      "type": "string",
+      "defaultValue": "https://github.com/azureautomation/automation-packs/raw/7c2a7c901099b384a05e17261d3c6b4192e841b4/101-sample-automation-resource-templates/sample-deploy-module/modules/Hello-WorldModule.zip",
+      "metadata": {
+        "description": "The URL for the module zip file to upload to Azure Automation. To learn about authoring modules for Automation see: http://azure.microsoft.com/blog/2014/12/15/authoring-integration-modules-for-azure-automation/"
+      }
     }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [],
+      "tags": {
+        "key": "value"
+      },
+      "properties": {
+        "comment": "Resource defined structure",
+        "sku": {
+          "name": "Free"
+        }
+      },
+      "resources": [
+        {
+          "name": "[parameters('moduleName')]",
+          "type": "modules",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "contentLink": {
+              "uri": "[parameters('moduleUri')]"
+            }
+          }
+        }
+      ]
+    }
+  ],
+
+  "outputs": {}
+}

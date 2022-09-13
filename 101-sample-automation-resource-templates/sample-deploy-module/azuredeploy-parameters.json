@@ -1,8 +1,8 @@
 {
-    "accountName": {
-        "value": "MyAutomationAccount"
-    },
-    "location": {
-        "value": "Japan East"
-    }
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "location": {
+    "value": "Japan East"
+  }
 }
