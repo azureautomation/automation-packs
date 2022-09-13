@@ -40,11 +40,11 @@
       }
     },
     "configurationVMParameter": {
-        "type": "string",
-        "metadata": {
-          "description": "Parameter for the configuration"
-        }
-      },
+      "type": "string",
+      "metadata": {
+        "description": "Parameter for the configuration"
+      }
+    },
     "jobConfigurationData": {
       "type": "string",
       "metadata": {
@@ -67,8 +67,8 @@
       "type": "Microsoft.Automation/automationAccounts",
       "apiVersion": "2018-01-15",
       "location": "[parameters('regionId')]",
-      "dependsOn": [ ],
-      "tags": { },
+      "dependsOn": [],
+      "tags": {},
       "properties": {
         "sku": {
           "name": "Basic"
@@ -79,7 +79,7 @@
           "name": "[concat(parameters('accountName'), '/', variables('dscModules').HybridWorker.moduleName)]",
           "type": "microsoft.automation/automationAccounts/Modules",
           "apiVersion": "2018-01-15",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
           ],
@@ -90,37 +90,37 @@
           }
         },
         {
-            "name": "AutomationEndpoint",
-            "type": "variables",
-            "apiVersion": "2015-10-31",
-            "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-            ],
-            "tags": {},
-            "properties": {
-                "description": "Automation endpoint",
-                "Value": "[concat('\"', reference(resourceId(resourceGroup().name, 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').registrationUrl,'\"')]"
-            }
+          "name": "AutomationEndpoint",
+          "type": "variables",
+          "apiVersion": "2015-10-31",
+          "dependsOn": [
+            "[resourceId('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "Automation endpoint",
+            "Value": "[concat('\"', reference(resourceId(resourceGroup().name, 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').registrationUrl,'\"')]"
+          }
         },
         {
-            "name": "AutomationCredential",
-            "type": "credentials",
-            "apiVersion": "2015-10-31",
-            "dependsOn": [
-                "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-            ],
-            "tags": {},
-            "properties": {
-                "userName": "AutomationKey",
-                "password": "[listKeys(resourceId(resourceGroup().name, 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').Keys[0].value]"
-            }
+          "name": "AutomationCredential",
+          "type": "credentials",
+          "apiVersion": "2015-10-31",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "userName": "AutomationKey",
+            "password": "[listKeys(resourceId(resourceGroup().name, 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').Keys[0].value]"
+          }
         },
         {
           "name": "[parameters('configurationName')]",
           "type": "Configurations",
           "apiVersion": "2018-01-15",
           "location": "[parameters('regionId')]",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
           ],
@@ -140,7 +140,7 @@
           "type": "Compilationjobs",
           "apiVersion": "2018-01-15",
           "location": "parameters('regionId')]",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Modules/',variables('dscModules').HybridWorker.ModuleName)]",
@@ -151,8 +151,8 @@
               "name": "[parameters('configurationName')]"
             },
             "parameters": {
-                "VMName": "[parameters('configurationVMParameter')]",
-                "ConfigurationData": "[parameters('jobConfigurationData')]"
+              "VMName": "[parameters('configurationVMParameter')]",
+              "ConfigurationData": "[parameters('jobConfigurationData')]"
             }
           }
         }
@@ -160,9 +160,9 @@
     }
   ],
   "outputs": {
-      "AutomationRegistrationURL": {
-        "type": "string",
-        "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').registrationUrl]"
-      }
+    "AutomationRegistrationURL": {
+      "type": "string",
+      "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Automation/automationAccounts/', parameters('accountName')), '2015-01-01-preview').registrationUrl]"
+    }
   }
 }

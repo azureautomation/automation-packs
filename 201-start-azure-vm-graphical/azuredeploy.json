@@ -1,129 +1,126 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Azure Automation account to deploy to."
-            }
-        },
-        "regionId": {
-            "type": "string",
-            "allowedValues": [
-                "Japan East",
-                "East US 2",
-                "West Europe",
-                "Southeast Asia",
-                "South Central US"
-            ],
-            "metadata": {
-                "description": "The region to deploy the Automation account in."
-            }
-        },
-        "userName": {
-            "type": "string",
-            "metadata": {
-                "description": "The username for the Azure Automation credential."
-            }
-        },
-        "password": {
-            "type": "secureString",
-            "metadata": {
-                "description": "The password for the Azure Automation credential."
-            }
-        },
-        "subscriptionIdValue": {
-            "type": "string",
-            "metadata": {
-                "description": "Your Azure subscription ID."
-            }
-        }
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01-preview#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Automation account to deploy to."
+      }
     },
-    "variables": {
-        "pricingTier": "Free",
-        
-        "runbookName": "StartAzureClassicVM",
-        "runbookUri": "https://gallery.technet.microsoft.com/scriptcenter/Start-Azure-Classic-VM-c6067b3d/file/141789/1/StartAzureClassicVM.graphrunbook",
-        "runbookType": "Graph",
-        "runbookDescription": "This is an Azure Automation graph runbook that gets all of your Azure VMs or just the VMs in a service and then starts the ones that are stopped. You can import and use this runbook only in the Azure Preview Portal.",
-        
-        "credentialName": "AzureCredential",
-        
-        "variableName": "AzureSubscriptionId",
-        "variableType": "string"
+    "regionId": {
+      "type": "string",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US"
+      ],
+      "metadata": {
+        "description": "The region to deploy the Automation account in."
+      }
+    },
+    "userName": {
+      "type": "string",
+      "metadata": {
+        "description": "The username for the Azure Automation credential."
+      }
+    },
+    "password": {
+      "type": "secureString",
+      "metadata": {
+        "description": "The password for the Azure Automation credential."
+      }
+    },
+    "subscriptionIdValue": {
+      "type": "string",
+      "metadata": {
+        "description": "Your Azure subscription ID."
+      }
+    }
+  },
+  "variables": {
+    "pricingTier": "Free",
 
-    },
-    "resources": [
-        {
-            "name": "[parameters('accountName')]",
-            "type": "Microsoft.Automation/automationAccounts",
-            "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [ ],
-            "tags": { },
-            "properties": {
-                "sku": {
-                    "name": "[variables('pricingTier')]"
-                }
-            },
-            "resources": [
-                {
-                    "name": "[variables('runbookName')]",
-                    "type": "runbooks",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {
-                    },
-                    "properties": {
-                        "runbookType": "[variables('runbookType')]",
-                        "logProgress": "false",
-                        "logVerbose": "false",
-                        "description": "[variables('runbookDescription')]",
-                        "draft": {
-                            "draftContentLink": {
-                                "uri": "[variables('runbookUri')]",
-                                "version": "1.0.0.0"
-                            }
-                        }
-                    }
-                },
-                {
-                    "name": "[variables('credentialName')]",
-                    "type": "credentials",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": { },
-                    "properties": {
-                        "userName": "[parameters('userName')]",
-                        "password": "[parameters('password')]"
-                    }
-                },
-                {
-                    "name": "[variables('variableName')]",
-                    "type": "variables",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {
-                    },
-                    "properties": {
-                        "description": "Subscription ID for the Azure account to manage.",
-                        "isEncrypted": 0,
-                        "type": "[variables('variableType')]",
-                        "value": "[concat('\"',parameters('subscriptionIdValue'),'\"')]"
-                    }
-                }
-            ]
+    "runbookName": "StartAzureClassicVM",
+    "runbookUri": "https://gallery.technet.microsoft.com/scriptcenter/Start-Azure-Classic-VM-c6067b3d/file/141789/1/StartAzureClassicVM.graphrunbook",
+    "runbookType": "Graph",
+    "runbookDescription": "This is an Azure Automation graph runbook that gets all of your Azure VMs or just the VMs in a service and then starts the ones that are stopped. You can import and use this runbook only in the Azure Preview Portal.",
+
+    "credentialName": "AzureCredential",
+
+    "variableName": "AzureSubscriptionId",
+    "variableType": "string"
+  },
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [],
+      "tags": {},
+      "properties": {
+        "sku": {
+          "name": "[variables('pricingTier')]"
         }
-    ],
-    "outputs": {}
+      },
+      "resources": [
+        {
+          "name": "[variables('runbookName')]",
+          "type": "runbooks",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbookType": "[variables('runbookType')]",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "[variables('runbookDescription')]",
+            "draft": {
+              "draftContentLink": {
+                "uri": "[variables('runbookUri')]",
+                "version": "1.0.0.0"
+              }
+            }
+          }
+        },
+        {
+          "name": "[variables('credentialName')]",
+          "type": "credentials",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "userName": "[parameters('userName')]",
+            "password": "[parameters('password')]"
+          }
+        },
+        {
+          "name": "[variables('variableName')]",
+          "type": "variables",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "Subscription ID for the Azure account to manage.",
+            "isEncrypted": 0,
+            "type": "[variables('variableType')]",
+            "value": "[concat('\"',parameters('subscriptionIdValue'),'\"')]"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {}
 }

@@ -1,5 +1,6 @@
 # Deploy a simple DSC Configuration using nested templates
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fazureautomation%2fautomation-packs%2fmaster%2f201-deploy-and-compile-DSC-configuration-using-base-templates%2fazuredeploy.json) 
+
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fazureautomation%2fautomation-packs%2fmaster%2f201-deploy-and-compile-DSC-configuration-using-base-templates%2fazuredeploy.json)
 
 This sample demonstrates how to deploy a DSC configuration and compile the configuration.
 It uses nested deployment templates for the configuration and its compilation job.
@@ -8,15 +9,15 @@ It uses nested deployment templates for the configuration and its compilation jo
 
 ### Automation Account
 
-This is the account that will contain your DSC configuration.     
-If you want to deploy to an existing account, make sure that the Resource Group, region, tags, and SKU in the template are all the same as your existing account, otherwise the properties will be overwritten. 
+This is the account that will contain your DSC configuration.
+If you want to deploy to an existing account, make sure that the Resource Group, region, tags, and SKU in the template are all the same as your existing account, otherwise the properties will be overwritten.
 
 ### Configuration
 
 The configuration installs all web server windows features  
-	reference the DSC configuration as webrolefull.Full
+ reference the DSC configuration as webrolefull.Full
 
-``` PowerShell
+```PowerShell
 Configuration webrolefull {
 
     $features = @(
@@ -43,11 +44,11 @@ Configuration webrolefull {
         @{Name = "Web-ISAPI-Filter"; Ensure = "Present"},
         @{Name = "Web-Ftp-Server"; Ensure = "Present"},
         @{Name = "Web-Mgmt-Tools"; Ensure = "Present"},
-        @{Name = "Web-Mgmt-Console"; Ensure = "Present"}     
+        @{Name = "Web-Mgmt-Console"; Ensure = "Present"}
        )
 
     node full {
-    
+
         foreach ($feature in $features){
             WindowsFeature ($feature.Name) {
                 Name = $feature.Name
@@ -58,19 +59,23 @@ Configuration webrolefull {
 }
 
 ```
-### Compilation job 
+
+### Compilation job
+
 the compilation job is linked to the configuration deployed to Azure automation. It makes sure the configuration gets compiled.
 You will need a GUID to start the job.
 You can use PowerShell to create a GUID.
-``` PowerShell
+
+```PowerShell
 #PowerShell < v5
 [System.Guid]::NewGuid()
 
 #PowerShell v5
 $JobGUID = (New-Guid).Guid
 
-``` 
+```
 
 #Known limitations
+
 - I had an issue using a DSC Configuration link containing spaces
 - Configurations can only be deployed as 'Published' during the preview

@@ -1,23 +1,23 @@
 {
-    "accountName": {
-        "value": "MyAutomationAccount"
-    },
-    "location": {
-        "value": "Japan East"
-    },
-    "pricingTier": {
-        "value": "Free"
-    },
-    "scheduleName": {
-        "value": "Daily Schedule at 12"
-    },
-    "startDate": {
-	"value": "12/30/2015 12:00:00"
-    },
-    "frequency": {
-	"value":"day"
-    },
-    "jobScheduleGuid": {
-	"value":"74bb2655-3e42-4784-b7bb-c12f298a8a32"
-    }
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "location": {
+    "value": "Japan East"
+  },
+  "pricingTier": {
+    "value": "Free"
+  },
+  "scheduleName": {
+    "value": "Daily Schedule at 12"
+  },
+  "startDate": {
+    "value": "12/30/2015 12:00:00"
+  },
+  "frequency": {
+    "value": "day"
+  },
+  "jobScheduleGuid": {
+    "value": "74bb2655-3e42-4784-b7bb-c12f298a8a32"
+  }
 }

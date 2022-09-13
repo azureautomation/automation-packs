@@ -49,12 +49,7 @@
     },
     "variableType": {
       "type": "string",
-      "allowedValues": [
-        "string",
-        "integer",
-        "dateTime",
-        "boolean"
-      ],
+      "allowedValues": ["string", "integer", "dateTime", "boolean"],
       "metadata": {
         "description": "The variable type."
       }
@@ -111,7 +106,6 @@
       "xActiveDirectory": {
         "moduleName": "xActiveDirectory",
         "moduleUri": "https://raw.githubusercontent.com/bdanse/automation-packs/master/201-Deploy-And-Compile-DSC-Configuration-Credentials/Configurations/Modules/xActiveDirectory.zip"
-
       }
     }
   },
@@ -122,8 +116,8 @@
       "type": "Microsoft.Automation/automationAccounts",
       "apiVersion": "2015-01-01-preview",
       "location": "[parameters('regionId')]",
-      "dependsOn": [ ],
-      "tags": { },
+      "dependsOn": [],
+      "tags": {},
       "properties": {
         "sku": {
           "name": "[variables('pricingTier')]"
@@ -134,7 +128,7 @@
           "name": "[concat(parameters('accountName'), '/', parameters('credentialName'))]",
           "type": "microsoft.automation/automationAccounts/Credentials",
           "apiVersion": "2015-01-01-preview",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
           ],
@@ -147,7 +141,7 @@
           "name": "[concat(parameters('accountName'), '/', parameters('variableName')) ]",
           "type": "microsoft.automation/automationAccounts/Variables",
           "apiVersion": "2015-01-01-preview",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
           ],
@@ -156,14 +150,13 @@
             "isEncrypted": 0,
             "type": "[parameters('variableType')]",
             "value": "[parameters('variableValue')]"
-
           }
         },
         {
           "name": "[concat(parameters('accountName'), '/', variables('dscModules').xComputerManagement.ModuleName)]",
           "type": "microsoft.automation/automationAccounts/Modules",
           "apiVersion": "2015-01-01-preview",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
           ],
@@ -177,7 +170,7 @@
           "name": "[concat(parameters('accountName'), '/', variables('dscModules').xActiveDirectory.ModuleName)]",
           "type": "microsoft.automation/automationAccounts/Modules",
           "apiVersion": "2015-01-01-preview",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
           ],
@@ -192,7 +185,7 @@
           "type": "Configurations",
           "apiVersion": "2015-01-01-preview",
           "location": "[parameters('regionId')]",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
           ],
@@ -212,7 +205,7 @@
           "type": "Compilationjobs",
           "apiVersion": "2015-01-01-preview",
           "location": "parameters('regionId')]",
-          "tags": { },
+          "tags": {},
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'),'/Credentials/',parameters('credentialName'))]",
@@ -233,6 +226,5 @@
       ]
     }
   ],
-  "outputs": {
-  }
+  "outputs": {}
 }

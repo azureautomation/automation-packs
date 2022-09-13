@@ -1,20 +1,20 @@
 {
-    "accountName": {
-        "value": "MyAutomationAccount"
-    },
-    "regionId": {
-        "value": "East US 2"
-    },
-    "configurationName": {
-        "value": "webrolefull"
-    },
-    "configurationURI": {
-        "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-deploy-and-compile-DSC-configuration/Configurations/webrolefull.ps1"
-    },
-    "configurationDescription": {
-        "value": "This webserver configuration contains all elements to install a full blown webserver."
-    },
-    "jobId": {
-        "value": "ee98ff68-ea26-4926-bd02-beb81febb2f9"
-    }
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "regionId": {
+    "value": "East US 2"
+  },
+  "configurationName": {
+    "value": "webrolefull"
+  },
+  "configurationURI": {
+    "value": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/201-deploy-and-compile-DSC-configuration/Configurations/webrolefull.ps1"
+  },
+  "configurationDescription": {
+    "value": "This webserver configuration contains all elements to install a full blown webserver."
+  },
+  "jobId": {
+    "value": "ee98ff68-ea26-4926-bd02-beb81febb2f9"
+  }
 }

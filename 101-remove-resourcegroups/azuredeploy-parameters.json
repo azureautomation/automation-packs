@@ -1,14 +1,14 @@
 {
-    "accountName": {
-        "value": "MyAutomationAccount"
-    },
-    "regionId": {
-        "value": "East US 2"
-    },
-    "userName": {
-        "value": "MyAzureADUser"
-    },
-    "password": { 
-		"value":  "MyAzureADPassword"
-    }
+  "accountName": {
+    "value": "MyAutomationAccount"
+  },
+  "regionId": {
+    "value": "East US 2"
+  },
+  "userName": {
+    "value": "MyAzureADUser"
+  },
+  "password": {
+    "value": "MyAzureADPassword"
+  }
 }

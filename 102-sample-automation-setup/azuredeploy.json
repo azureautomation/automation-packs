@@ -1,452 +1,450 @@
 {
-    "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
-    "contentVersion": "1.0",
-    "parameters": {
-        "accountName": {
-            "type": "string",
-            "defaultValue": "MyAutomationAccount",
-            "metadata": {
-                "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account, or they will be changed."
-            }
-        },
-        "regionId": {
-            "type": "string",
-            "defaultValue": "South Central US",
-            "allowedValues": [
-                "japaneast",
-                "eastus2",
-                "westeurope",
-                "southeastasia",
-                "southcentralus"
-            ],
-            "metadata": {
-                "description": "The region the Automation account is located in."
-            }
-        },
-        "dscCompilationJobId": {
-            "type": "string",
-            "metadata": {
-                "description": "The job id, as a GUID, to compile the configuration"
-            }
-        },
-        "runbookJobId": {
-            "type": "string",
-            "metadata": {
-                "description": "The job id, as a GUID, to run the runbook"
-            }
-        },
-        "jobScheduleId": {
-            "type": "string",
-            "metadata": {
-                "description": "The job schedule id, as a GUID, to hook the schedule up to the runbook"
-            }
-        },
-        "registrationKey": {
-            "type": "secureString",
-            "metadata": {
-                "description": "Registration key to use to onboard to the Azure Automation DSC pull/reporting server"
-            }
-        },
-        "registrationUrl": {
-            "type": "string",
-            "metadata": {
-                "description": "Registration url of the Azure Automation DSC pull/reporting server"
-            }
-        },
-        "timestamp": {
-            "type": "string",
-            "metadata": {
-                "description": "The current datetime, as a string, to force the request to go through ARM even if all fields are the same as last ARM deployment of this template; example in parameters file is in MM/dd/yyyy H:mm:ss tt format"
-            }
+  "$schema": "http://schemas.microsoft.org/azure/deploymentTemplate?api-version=2015-01-01#",
+  "contentVersion": "1.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "defaultValue": "MyAutomationAccount",
+      "metadata": {
+        "description": "The name of the Automation account to use.  If this account exists, check the SKU and tags to make sure they match the exisitng account, or they will be changed."
+      }
+    },
+    "regionId": {
+      "type": "string",
+      "defaultValue": "South Central US",
+      "allowedValues": [
+        "japaneast",
+        "eastus2",
+        "westeurope",
+        "southeastasia",
+        "southcentralus"
+      ],
+      "metadata": {
+        "description": "The region the Automation account is located in."
+      }
+    },
+    "dscCompilationJobId": {
+      "type": "string",
+      "metadata": {
+        "description": "The job id, as a GUID, to compile the configuration"
+      }
+    },
+    "runbookJobId": {
+      "type": "string",
+      "metadata": {
+        "description": "The job id, as a GUID, to run the runbook"
+      }
+    },
+    "jobScheduleId": {
+      "type": "string",
+      "metadata": {
+        "description": "The job schedule id, as a GUID, to hook the schedule up to the runbook"
+      }
+    },
+    "registrationKey": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Registration key to use to onboard to the Azure Automation DSC pull/reporting server"
+      }
+    },
+    "registrationUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Registration url of the Azure Automation DSC pull/reporting server"
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "metadata": {
+        "description": "The current datetime, as a string, to force the request to go through ARM even if all fields are the same as last ARM deployment of this template; example in parameters file is in MM/dd/yyyy H:mm:ss tt format"
+      }
+    }
+  },
+  "variables": {
+    "vmName": "[concat('vm', uniqueString(parameters('accountName')))]",
+    "storageAccountName": "[concat('storage4', variables('vmName'))]",
+    "pricingTier": "Free",
+    "configurationURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Configurations/SimpleConfig.ps1",
+    "configurationName": "SimpleConfig",
+    "configurationDescription": "A configuration for installing IIS",
+    "runbookURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Runbooks/SampleRunbook.ps1",
+    "runbookName": "SampleRunbook",
+    "runbookDescription": "A sample runbook",
+    "credentialName": "MyVMCredential",
+    "vmUsername": "testuser",
+    "vmPassword": "P2ssw0rd!",
+    "vmPort": "5986",
+    "vmUseSSL": "true",
+    "scheduleName": "DailyAt6PM",
+    "scheduleStartTime": "12/30/2020 18:00:00",
+    "dscExtensionModulesUrl": "https://github.com/Azure/azure-quickstart-templates/raw/master/dsc-extension-azure-automation-pullserver/UpdateLCMforAAPull.zip",
+    "dscExtensionConfigurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull",
+    "nodeConfigurationName": "[concat(variables('configurationName'), '.webserver')]",
+    "vmImagePublisher": "MicrosoftWindowsServer",
+    "vmImageOffer": "WindowsServer",
+    "vmOSDiskName": "osdiskforwindowssimple",
+    "vmNicName": "myVMNic",
+    "vmAddressPrefix": "10.0.0.0/16",
+    "vmSubnetName": "Subnet",
+    "vmSubnetPrefix": "10.0.0.0/24",
+    "vmStorageAccountType": "Standard_LRS",
+    "vmPublicIPAddressName": "myPublicIP",
+    "vmPublicIPAddressType": "Dynamic",
+    "vmStorageAccountContainerName": "vhds",
+    "vmSize": "Basic_A0",
+    "vmVirtualNetworkName": "MyVNET",
+    "vmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vmVirtualNetworkName'))]",
+    "vmSubnetRef": "[concat(variables('vmVnetID'), '/subnets/', variables('vmSubnetName'))]",
+    "vmOSVersion": "2012-R2-Datacenter",
+    "vmFQDN": "[concat(variables('vmName'), '.', parameters('regionId'), '.cloudapp.azure.com')]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('accountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [],
+      "tags": {},
+      "properties": {
+        "sku": {
+          "name": "[variables('pricingTier')]"
         }
-    },
-    "variables": {
-        "vmName": "[concat('vm', uniqueString(parameters('accountName')))]",
-        "storageAccountName": "[concat('storage4', variables('vmName'))]",
-        "pricingTier": "Free",
-        "configurationURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Configurations/SimpleConfig.ps1",
-        "configurationName": "SimpleConfig",
-        "configurationDescription": "A configuration for installing IIS",
-        "runbookURI": "https://raw.githubusercontent.com/azureautomation/automation-packs/master/102-sample-automation-setup/Runbooks/SampleRunbook.ps1",
-        "runbookName": "SampleRunbook",
-        "runbookDescription": "A sample runbook",
-        "credentialName": "MyVMCredential",
-        "vmUsername": "testuser",
-        "vmPassword": "P2ssw0rd!",
-        "vmPort": "5986",
-        "vmUseSSL": "true",
-        "scheduleName": "DailyAt6PM",
-        "scheduleStartTime": "12/30/2020 18:00:00",
-        "dscExtensionModulesUrl": "https://github.com/Azure/azure-quickstart-templates/raw/master/dsc-extension-azure-automation-pullserver/UpdateLCMforAAPull.zip",
-        "dscExtensionConfigurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull",
-        "nodeConfigurationName": "[concat(variables('configurationName'), '.webserver')]",
-        "vmImagePublisher": "MicrosoftWindowsServer",
-        "vmImageOffer": "WindowsServer",
-        "vmOSDiskName": "osdiskforwindowssimple",
-        "vmNicName": "myVMNic",
-        "vmAddressPrefix": "10.0.0.0/16",
-        "vmSubnetName": "Subnet",
-        "vmSubnetPrefix": "10.0.0.0/24",
-        "vmStorageAccountType": "Standard_LRS",
-        "vmPublicIPAddressName": "myPublicIP",
-        "vmPublicIPAddressType": "Dynamic",
-        "vmStorageAccountContainerName": "vhds",
-        "vmSize": "Basic_A0",
-        "vmVirtualNetworkName": "MyVNET",
-        "vmVnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vmVirtualNetworkName'))]",
-        "vmSubnetRef": "[concat(variables('vmVnetID'), '/subnets/', variables('vmSubnetName'))]",
-        "vmOSVersion": "2012-R2-Datacenter",
-        "vmFQDN": "[concat(variables('vmName'), '.', parameters('regionId'), '.cloudapp.azure.com')]"
-    },
-    "resources": [
+      },
+      "resources": [
         {
-            "name": "[parameters('accountName')]",
-            "type": "Microsoft.Automation/automationAccounts",
-            "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [],
-            "tags": {},
-            "properties": {
-                "sku": {
-                    "name": "[variables('pricingTier')]"
-                }
+          "name": "[variables('configurationName')]",
+          "type": "configurations",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "properties": {
+            "logVerbose": "true",
+            "description": "[variables('configurationDescription')]",
+            "state": "Published",
+            "overwrite": "true",
+            "source": {
+              "type": "uri",
+              "value": "[variables('configurationURI')]"
+            }
+          }
+        },
+        {
+          "name": "[parameters('dscCompilationJobId')]",
+          "type": "compilationjobs",
+          "apiVersion": "2015-01-01-preview",
+          "location": "parameters('regionId')]",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/configurations/', variables('configurationName'))]"
+          ],
+          "properties": {
+            "configuration": {
+              "name": "[variables('configurationName')]"
+            }
+          }
+        },
+        {
+          "name": "[variables('runbookName')]",
+          "type": "runbooks",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbookType": "PowerShell",
+            "logProgress": "false",
+            "logVerbose": "true",
+            "description": "[variables('runbookDescription')]",
+            "publishContentLink": {
+              "uri": "[variables('runbookURI')]",
+              "version": "1.0.0.0"
+            }
+          }
+        },
+        {
+          "name": "[variables('credentialName')]",
+          "type": "credentials",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "userName": "[variables('vmUsername')]",
+            "password": "[variables('vmPassword')]"
+          }
+        },
+        {
+          "name": "[parameters('runbookJobId')]",
+          "type": "jobs",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('runbookName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/credentials/', variables('credentialName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbook": {
+              "name": "[variables('runbookName')]"
             },
-            "resources": [
-                {
-                    "name": "[variables('configurationName')]",
-                    "type": "configurations",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "tags": {},
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "properties": {
-                        "logVerbose": "true",
-                        "description": "[variables('configurationDescription')]",                    
-                        "state": "Published",
-                        "overwrite": "true",
-                        "source": {
-                            "type": "uri",
-                            "value": "[variables('configurationURI')]"
-                        }
-                    }
-                },
-                {
-                    "name": "[parameters('dscCompilationJobId')]",
-                    "type": "compilationjobs",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "parameters('regionId')]",
-                    "tags": {},
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/configurations/', variables('configurationName'))]"
-                    ],
-                    "properties": {
-                        "configuration": {
-                            "name": "[variables('configurationName')]"
-                        }
-                    }
-                },
-                {
-                    "name": "[variables('runbookName')]",
-                    "type": "runbooks",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "runbookType": "PowerShell",
-                        "logProgress": "false",
-                        "logVerbose": "true",
-                        "description": "[variables('runbookDescription')]",
-                        "publishContentLink": {
-                            "uri": "[variables('runbookURI')]",
-                            "version": "1.0.0.0"
-                        }
-                    }
-                },
-                {
-                    "name": "[variables('credentialName')]",
-                    "type": "credentials",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "userName": "[variables('vmUsername')]",
-                        "password": "[variables('vmPassword')]"
-                    }
-                },
-                {
-                    "name": "[parameters('runbookJobId')]",
-                    "type": "jobs",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('runbookName'))]",
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/credentials/', variables('credentialName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "runbook": {
-                            "name": "[variables('runbookName')]"
-                        },
-                        "parameters": {
-                            "VMName": "[variables('vmFQDN')]",
-                            "VMPort": "[variables('vmPort')]",
-                            "VMUseSSL": "[variables('vmUseSSL')]"
-                        }
-                    }
-                },
-                {
-                    "name": "[variables('scheduleName')]",
-                    "type": "schedules",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "description": "Runs daily at 6 PM",
-                        "startTime": "[variables('scheduleStartTime')]",
-                        "isEnabled": "true",
-                        "interval": "1",
-                        "frequency": "day"
-                    }
-                },
-                {
-                    "name": "[parameters('jobScheduleId')]",
-                    "type": "jobSchedules",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('regionId')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('runbookName'))]",
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/schedules/', variables('scheduleName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "schedule": {
-                            "name": "[variables('scheduleName')]"
-                        },
-                        "runbook": {
-                            "name": "[variables('runbookName')]"
-                        },
-                        "parameters": {
-                            "VMName": "[variables('vmFQDN')]",
-                            "VMPort": "[variables('vmPort')]",
-                            "VMUseSSL": "[variables('vmUseSSL')]"
-                        }
-                    }
-                }
-            ]
+            "parameters": {
+              "VMName": "[variables('vmFQDN')]",
+              "VMPort": "[variables('vmPort')]",
+              "VMUseSSL": "[variables('vmUseSSL')]"
+            }
+          }
         },
         {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('storageAccountName')]",
-            "apiVersion": "2015-05-01-preview",
-            "location": "[parameters('regionId')]",
-            "properties": {
-                "accountType": "[variables('vmStorageAccountType')]"
-            }
+          "name": "[variables('scheduleName')]",
+          "type": "schedules",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "Runs daily at 6 PM",
+            "startTime": "[variables('scheduleStartTime')]",
+            "isEnabled": "true",
+            "interval": "1",
+            "frequency": "day"
+          }
         },
         {
-            "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[variables('vmPublicIPAddressName')]",
-            "location": "[parameters('regionId')]",
-            "properties": {
-                "publicIPAllocationMethod": "[variables('vmPublicIPAddressType')]",
-                "dnsSettings": {
-                    "domainNameLabel": "[variables('vmName')]"
-                }
+          "name": "[parameters('jobScheduleId')]",
+          "type": "jobSchedules",
+          "apiVersion": "2015-01-01-preview",
+          "location": "[parameters('regionId')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/runbooks/', variables('runbookName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/schedules/', variables('scheduleName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "schedule": {
+              "name": "[variables('scheduleName')]"
+            },
+            "runbook": {
+              "name": "[variables('runbookName')]"
+            },
+            "parameters": {
+              "VMName": "[variables('vmFQDN')]",
+              "VMPort": "[variables('vmPort')]",
+              "VMUseSSL": "[variables('vmUseSSL')]"
             }
-        },
-        {
-            "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('vmVirtualNetworkName')]",
-            "location": "[parameters('regionId')]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[variables('vmAddressPrefix')]"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "[variables('vmSubnetName')]",
-                        "properties": {
-                            "addressPrefix": "[variables('vmSubnetPrefix')]"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[variables('vmNicName')]",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', variables('vmPublicIPAddressName'))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('vmVirtualNetworkName'))]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('vmPublicIPAddressName'))]"
-                            },
-                            "subnet": {
-                                "id": "[variables('vmSubnetRef')]"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "apiVersion": "2015-06-15",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('vmName')]",
-            "location": "[parameters('regionId')]",
-            "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-                "[concat('Microsoft.Network/networkInterfaces/', variables('vmNicName'))]"
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "[variables('vmSize')]"
-                },
-                "osProfile": {
-                    "computername": "[variables('vmName')]",
-                    "adminUsername": "[variables('vmUsername')]",
-                    "adminPassword": "[variables('vmPassword')]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[variables('vmImagePublisher')]",
-                        "offer": "[variables('vmImageOffer')]",
-                        "sku": "[variables('vmOSVersion')]",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "name": "osdisk",
-                        "vhd": {
-                            "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('vmOSDiskName'),'.vhd')]"
-                        },
-                        "caching": "ReadWrite",
-                        "createOption": "FromImage"
-                    }
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": "true",
-                        "storageUri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),'/Microsoft.Powershell.DSC')]",
-            "apiVersion": "2015-06-15",
-            "location": "[parameters('regionId')]",
-             "dependsOn": [
-                "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
-                "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/configurations/', variables('configurationName'))]",
-                "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/compilationjobs/', parameters('dscCompilationJobId'))]",
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-            ],
-            "properties": {
-                "publisher": "Microsoft.Powershell",
-                "type": "DSC",
-                "typeHandlerVersion": "2.19",
-                "protectedSettings": {
-                    "Items": {
-                        "registrationKeyPrivate": "[parameters('registrationKey')]"
-                    }
-                },
-                "settings": {
-                    "ModulesUrl": "[variables('dscExtensionModulesUrl')]",
-                    "SasToken": "",
-                    "ConfigurationFunction": "[variables('dscExtensionConfigurationFunction')]",
-                    "Properties": [
-                        {
-                            "Name": "RegistrationKey",
-                            "Value": {
-                                "UserName": "PLACEHOLDER_DONOTUSE",
-                                "Password": "PrivateSettingsRef:registrationKeyPrivate"
-                            },
-                            "TypeName": "System.Management.Automation.PSCredential"
-                        },
-                        {
-                            "Name": "RegistrationUrl",
-                            "Value": "[parameters('registrationUrl')]",
-                            "TypeName": "System.String"
-                        },
-                        {
-                            "Name": "NodeConfigurationName",
-                            "Value": "[variables('nodeConfigurationName')]",
-                            "TypeName": "System.String"
-                        },
-                        {
-                            "Name": "ConfigurationMode",
-                            "Value": "ApplyAndMonitor",
-                            "TypeName": "System.String"
-                        },
-                        {
-                            "Name": "ConfigurationModeFrequencyMins",
-                            "Value": 15,
-                            "TypeName": "System.Int32"
-                        },
-                        {
-                            "Name": "RefreshFrequencyMins",
-                            "Value": 30,
-                            "TypeName": "System.Int32"
-                        },
-                        {
-                            "Name": "RebootNodeIfNeeded",
-                            "Value": true,
-                            "TypeName": "System.Boolean"
-                        },
-                        {
-                            "Name": "ActionAfterReboot",
-                            "Value": "ContinueConfiguration",
-                            "TypeName": "System.String"
-                        },
-                        {
-                            "Name": "AllowModuleOverwrite",
-                            "Value": false,
-                            "TypeName": "System.Boolean"
-                        },
-                        {
-                            "Name": "Timestamp",
-                            "Value": "[parameters('timestamp')]",
-                            "TypeName": "System.String"
-                        }
-                    ]
-                }
-            }
+          }
         }
-    ],
-    "outputs": {}
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('regionId')]",
+      "properties": {
+        "accountType": "[variables('vmStorageAccountType')]"
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('vmPublicIPAddressName')]",
+      "location": "[parameters('regionId')]",
+      "properties": {
+        "publicIPAllocationMethod": "[variables('vmPublicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[variables('vmName')]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('vmVirtualNetworkName')]",
+      "location": "[parameters('regionId')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": ["[variables('vmAddressPrefix')]"]
+        },
+        "subnets": [
+          {
+            "name": "[variables('vmSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('vmSubnetPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('vmNicName')]",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('vmPublicIPAddressName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vmVirtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('vmPublicIPAddressName'))]"
+              },
+              "subnet": {
+                "id": "[variables('vmSubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('vmNicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computername": "[variables('vmName')]",
+          "adminUsername": "[variables('vmUsername')]",
+          "adminPassword": "[variables('vmPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('vmImagePublisher')]",
+            "offer": "[variables('vmImageOffer')]",
+            "sku": "[variables('vmOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('vmOSDiskName'),'.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "true",
+            "storageUri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName'),'/Microsoft.Powershell.DSC')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('regionId')]",
+      "dependsOn": [
+        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]",
+        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/configurations/', variables('configurationName'))]",
+        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'), '/compilationjobs/', parameters('dscCompilationJobId'))]",
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.19",
+        "protectedSettings": {
+          "Items": {
+            "registrationKeyPrivate": "[parameters('registrationKey')]"
+          }
+        },
+        "settings": {
+          "ModulesUrl": "[variables('dscExtensionModulesUrl')]",
+          "SasToken": "",
+          "ConfigurationFunction": "[variables('dscExtensionConfigurationFunction')]",
+          "Properties": [
+            {
+              "Name": "RegistrationKey",
+              "Value": {
+                "UserName": "PLACEHOLDER_DONOTUSE",
+                "Password": "PrivateSettingsRef:registrationKeyPrivate"
+              },
+              "TypeName": "System.Management.Automation.PSCredential"
+            },
+            {
+              "Name": "RegistrationUrl",
+              "Value": "[parameters('registrationUrl')]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "NodeConfigurationName",
+              "Value": "[variables('nodeConfigurationName')]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationMode",
+              "Value": "ApplyAndMonitor",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationModeFrequencyMins",
+              "Value": 15,
+              "TypeName": "System.Int32"
+            },
+            {
+              "Name": "RefreshFrequencyMins",
+              "Value": 30,
+              "TypeName": "System.Int32"
+            },
+            {
+              "Name": "RebootNodeIfNeeded",
+              "Value": true,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "ActionAfterReboot",
+              "Value": "ContinueConfiguration",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "AllowModuleOverwrite",
+              "Value": false,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "Timestamp",
+              "Value": "[parameters('timestamp')]",
+              "TypeName": "System.String"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {}
 }

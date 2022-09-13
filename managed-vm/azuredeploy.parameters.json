@@ -1,24 +1,24 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "workspaceName": {
-            "value": "AA-DemoWorkspace"
-        },
-        "accountName": {
-            "value": "AA-DemoAccount"
-        },
-        "accountWorkspaceRegion": {
-            "value": "East US"
-        },
-        "VMName": {
-            "value": "AA-DemoVM"
-        },
-        "username": {
-            "value": "demouser"
-        },
-        "password": {
-            "value": "Strong4$Password"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "value": "AA-DemoWorkspace"
+    },
+    "accountName": {
+      "value": "AA-DemoAccount"
+    },
+    "accountWorkspaceRegion": {
+      "value": "East US"
+    },
+    "VMName": {
+      "value": "AA-DemoVM"
+    },
+    "username": {
+      "value": "demouser"
+    },
+    "password": {
+      "value": "Strong4$Password"
     }
+  }
 }
